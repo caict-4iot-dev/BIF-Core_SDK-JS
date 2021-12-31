@@ -18,13 +18,13 @@ it('test checkContractAddress', async () => {
  */
 it('test createContract', async () => {
     let createContractOperation = {
-        sourceAddress: 'did:bid:efQMuPahc3zm7abBUBfj22xZokhZ7rED',
-        privateKey: 'priSPKqSR8vTVJ1y8Wu1skBNWMHPeu8nkaerZNKEzkRq3KJix4',
-        payload: "\"use strict\";function init(bar){/*init whatever you want*/return;}function main(input){let para = JSON.parse(input);if (para.do_foo)\n            {\n              let x = {\n                \'hello\' : \'world\'\n              };\n            }\n          }\n          \n          function query(input)\n          { \n            return input;\n          }\n        ",
+        sourceAddress: 'did:bid:efHzcjj3w1eg9B4aoaem5axrBLS8y8JF',
+        privateKey: 'priSPKk7LBEPdwYARirLfAheRbYTTmKAJJWUpKQgTRMG7cWMay',
+        payload: "608060405234801561001057600080fd5b5061013f806100206000396000f300608060405260043610610041576000357c0100000000000000000000000000000000000000000000000000000000900463ffffffff168063031153c214610046575b600080fd5b34801561005257600080fd5b5061005b6100d6565b6040518080602001828103825283818151815260200191508051906020019080838360005b8381101561009b578082015181840152602081019050610080565b50505050905090810190601f1680156100c85780820380516001836020036101000a031916815260200191505b509250505060405180910390f35b60606040805190810160405280600b81526020017f68656c6c6f20776f726c640000000000000000000000000000000000000000008152509050905600a165627a7a72305820bc883dfd86fdb2f9784cc8947e4c13628125b0b4dd840f903fb4b40c12ac91010029",
         initBalance: '1',
         remarks: 'create account',
-        type: 0,
-        feeLimit: '100100000',
+        type: 1,
+        feeLimit: '100208801',
         ceilLedgerSeq: '',
         initInput: ''
     }
@@ -36,7 +36,7 @@ it('test createContract', async () => {
  * 根据交易Hash查询合约地址
  */
 it('test getContractAddress', async () => {
-    const hash = '59228dfa8fcd1e65b918dbe30096302f3a4b136d2762200029ed397496f96ada'
+    const hash = '69677fd576a38b3ed64e4f4bbc80deb4b32ce8cbe00ef1daf467343eac0ee62c'
     let data = await sdk.contract.getContractAddress(hash)
     console.log('getContractAddress() : ', JSON.stringify(data))
 })
