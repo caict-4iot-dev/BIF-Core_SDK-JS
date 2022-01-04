@@ -56,34 +56,76 @@ it('test getTransactionInfo', async () => {
 })
 
 it('test evaluateFee', async () => {
-    let operationList = [
+    //setMetadata
+    let setMetadata=sdk.operaction.accountSetMetadataOperation
+    setMetadata.setKey('mykey1')
+    setMetadata.setValue('myvalue1')
+    setMetadata.setVersion('0')
+    //accountCreate
+    let accountCreateOperation=sdk.operaction.accountCreateOperation
+    accountCreateOperation.setDestAddress('did:bid:efzvTJDj1HnbSwLrynxCCwsEFT8RZJzL')
+    accountCreateOperation.setInitBalance(1)
+
+    //accountCreate
+    let accountSetPrivilegeOperation=sdk.operaction.accountSetPrivilegeOperation
+    let signers = [
         {
-            'set_metadata': {
-                'key': 'mykey1',
-                'value': 'myvalue1',
-                'version': 0
-            },
-            'type': 4
+            "address": "did:bid:ef29FfnB21n7wS5U4VY1rCzbo8tjPsJv4",
+            "weight": 2
         }
     ]
-    let info = {
-        items: [
-            {
-                private_keys: [
-                    'priSPKUudyVAi5WrhHJU1vCJZYyBL5DNd36MPhbYgHuDPz5E7r'
-                ],
-                transaction_json: {
-                    fee_limit: '1000000',
-                    gas_price: '1',
-                    source_address: 'did:bid:efAsXt5zM2Hsq6wCYRMZBS5Q9HvG2EmK',
-                    nonce: '29',
-                    operations: operationList
-                },
-                signature_number: 1
-            }
-        ]
+    let typeThresholds = [
+        {
+            "type": 1,
+            "threshold": 1
+        },
+        {
+            "type": 7,
+            "threshold": 2
+        }
+    ]
+    accountSetPrivilegeOperation.setMasterWeight(1)
+    accountSetPrivilegeOperation.setSigners(signers)
+    accountSetPrivilegeOperation.setTxThreshold(2)
+    accountSetPrivilegeOperation.setTypeThresholds(typeThresholds)
+
+    //gasSendOperation
+    let gasSendOperation=sdk.operaction.gasSendOperation
+    gasSendOperation.setAmount(1000)
+    gasSendOperation.setDestAddress('did:bid:efYhALrHoHiaVnoZgRgJbCghZZdzkQUh')
+
+
+    //contractCreateOperation
+    let contractCreateOperation=sdk.operaction.contractCreateOperation
+    contractCreateOperation.setPayload("\"use strict\";function init(bar){/*init whatever you want*/return;}function main(input){let para = JSON.parse(input);if (para.do_foo)\n            {\n              let x = {\n                \'hello\' : \'world\'\n              };\n            }\n          }\n          \n          function query(input)\n          { \n            return input;\n          }\n        ",)
+    contractCreateOperation.setInitBalance(1)
+    contractCreateOperation.setType(1)
+
+    //contractInvokeOperation
+    let contractInvokeOperation=sdk.operaction.contractInvokeOperation
+    contractInvokeOperation.setContractAddress('did:bid:efL7d2Ak1gyUpU4eiM3C9oxvbkhXr4Mu')
+
+    //privateContractCreateOperation
+    let privateContractCreateOperation=sdk.operaction.privateContractCreateOperation
+    privateContractCreateOperation.setType(0)
+    privateContractCreateOperation.setFrom('bDRE8iIfGdwDeQOcJqZabZQH5Nd6cfTOMOorudtgXjQ=')
+    privateContractCreateOperation.setTo(['bwPdcwfUEtSZnaDmi2Nvj9HTwOcRvCRDh0cRdvX9BFw='])
+    privateContractCreateOperation.setPayload('\"use strict\";function queryBanance(address)\r\n{return \" test query private contract sdk_3\";}\r\nfunction sendTx(to,amount)\r\n{return Chain.payCoin(to,amount);}\r\nfunction init(input)\r\n{return;}\r\nfunction main(input)\r\n{let args=JSON.parse(input);if(args.method===\"sendTx\"){return sendTx(args.params.address,args.params.amount);}}\r\nfunction query(input)\r\n{let args=JSON.parse(input);if(args.method===\"queryBanance\"){return queryBanance(args.params.address);}}')
+
+    //privateContractCreateOperation
+    let privateContractCallOperation=sdk.operaction.privateContractCallOperation
+    privateContractCallOperation.setType(0)
+    privateContractCallOperation.setFrom('bDRE8iIfGdwDeQOcJqZabZQH5Nd6cfTOMOorudtgXjQ=')
+    privateContractCallOperation.setTo(['bwPdcwfUEtSZnaDmi2Nvj9HTwOcRvCRDh0cRdvX9BFw='])
+    privateContractCallOperation.setDestAddress('did:bid:efGSDpr4Fo4TEnHx1kBBSgSAfTt85kY6')
+    privateContractCallOperation.setInput('{\"method\":\"queryBanance\",\"params\":{\"address\":\"567890哈哈=======\"}}')
+
+    let request = {
+        sourceAddress: 'did:bid:efAsXt5zM2Hsq6wCYRMZBS5Q9HvG2EmK',
+        privateKey: 'priSPKUudyVAi5WrhHJU1vCJZYyBL5DNd36MPhbYgHuDPz5E7r',
+        operations: privateContractCallOperation
     }
-    let data = await sdk.transaction.evaluateFee(info)
+    let data = await sdk.transaction.evaluateFee(request)
     console.log('evaluateFee() : ', JSON.stringify(data))
 })
 
