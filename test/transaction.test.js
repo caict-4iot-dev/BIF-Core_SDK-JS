@@ -1,8 +1,7 @@
 'use strict'
 const BIFCoreSDK = require('../index')
 const sdk = new BIFCoreSDK({
-     //host: 'http://test-bif-core.xinghuo.space'
-    host: 'http://172.19.6.6:37005'
+     host: 'http://test-bif-core.xinghuo.space'
 })
 
 it('test gasSend', async () => {
