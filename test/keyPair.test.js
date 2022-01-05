@@ -20,7 +20,7 @@ it('test getBidAndKeyPair()', async () => {
 })
 
 it('test getBidAndKeyPairBySM2()', async () => {
-    const KeyPairEntitySM2 = await sdk.keypair.getBidAndKeyPairBySM2()
+    const KeyPairEntitySM2 =  sdk.keypair.getBidAndKeyPairBySM2()
     const encAddress = KeyPairEntitySM2.encAddress
     const encPublicKey = KeyPairEntitySM2.encPublicKey
     const encPrivateKey = KeyPairEntitySM2.encPrivateKey
@@ -65,6 +65,9 @@ it('test ED25519', async () => {
     // 公钥对象
     const publicKeyManager = await sdk.keypair.publicKeyManager(privateKeyManager.encPublicKey)
     console.log('privateKeyManager()', JSON.stringify(publicKeyManager))
+
+    const isAddress = await sdk.keypair.isAddress(privateKeyManager.encAddress)
+    console.log('isAddress ', isAddress)
 })
 
 it('test SM2', async () => {
@@ -106,7 +109,7 @@ it('test keyStoreWithPrivateKey()', async () => {
     console.log('generateKeyStore()', JSON.stringify(keyStore))
 
     // 解析密钥存储器
-    const privateKey = sdk.keypair.decipherKeyStore(keyStore, password)
+    const privateKey = sdk.keypair.decipherKeyStore('{\"cypher_text\":\"f306394e808cb422f5c0ad072f09283a4cee1fc8058ab2593397da1d375becdab05b886703d28e802353d5a659b3484f0103\",\"aesctr_iv\":\"9a1c9811fc29cfbe0b6e2160b2f7dc81\",\"scrypt_params\":{\"n\":16384,\"p\":1,\"r\":8,\"salt\":\"80454456c43bb0ed2103b990f549c15262d354cdb49a8682af1d4f618c112b9c\"},\"version\":2}', password)
     console.log('decipherKeyStore()', JSON.stringify(privateKey))
 })
 
