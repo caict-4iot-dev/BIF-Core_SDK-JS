@@ -2,13 +2,13 @@
 
 const BIFCoreSDK = require('../index')
 const sdk = new BIFCoreSDK({
-     host: 'http://test-bif-core.xinghuo.space'
+    host: 'http://test.bifcore.bitfactory.cn'
 })
 /**
  * 检测合约账户的有效性
  */
 it('test checkContractAddress', async () => {
-    const contractAddress = 'did:bid:efL7d2Ak1gyUpU4eiM3C9oxvbkhXr4Mu'
+    const contractAddress = 'did:bid:ef4NWJx2enwNzpnh3w5SJcj9Qhoddaa5'
     let data = await sdk.contract.checkContractAddress(contractAddress)
     console.log('checkContractAddress() : ', JSON.stringify(data))
 })
@@ -18,13 +18,14 @@ it('test checkContractAddress', async () => {
  */
 it('test createContract', async () => {
     let createContractOperation = {
-        sourceAddress: 'did:bid:efHzcjj3w1eg9B4aoaem5axrBLS8y8JF',
-        privateKey: 'priSPKk7LBEPdwYARirLfAheRbYTTmKAJJWUpKQgTRMG7cWMay',
-        payload: "608060405234801561001057600080fd5b5061013f806100206000396000f300608060405260043610610041576000357c0100000000000000000000000000000000000000000000000000000000900463ffffffff168063031153c214610046575b600080fd5b34801561005257600080fd5b5061005b6100d6565b6040518080602001828103825283818151815260200191508051906020019080838360005b8381101561009b578082015181840152602081019050610080565b50505050905090810190601f1680156100c85780820380516001836020036101000a031916815260200191505b509250505060405180910390f35b60606040805190810160405280600b81526020017f68656c6c6f20776f726c640000000000000000000000000000000000000000008152509050905600a165627a7a72305820bc883dfd86fdb2f9784cc8947e4c13628125b0b4dd840f903fb4b40c12ac91010029",
+        sourceAddress: 'did:bid:ef4NWJx2enwNzpnh3w5SJcj9Qhoddaa5',
+        privateKey: 'priSPKkLzxxmGehL534YiXsov9xF8ssioBWuM3xiubDqTERZiE',
+        payload: '608060405234801561001057600080fd5b5061013f806100206000396000f300608060405260043610610041576000357c0100000000000000000000000000000000000000000000000000000000900463ffffffff168063031153c214610046575b600080fd5b34801561005257600080fd5b5061005b6100d6565b6040518080602001828103825283818151815260200191508051906020019080838360005b8381101561009b578082015181840152602081019050610080565b50505050905090810190601f1680156100c85780820380516001836020036101000a031916815260200191505b509250505060405180910390f35b60606040805190810160405280600b81526020017f68656c6c6f20776f726c640000000000000000000000000000000000000000008152509050905600a165627a7a72305820bc883dfd86fdb2f9784cc8947e4c13628125b0b4dd840f903fb4b40c12ac91010029',
         initBalance: '1',
         remarks: 'create account',
         type: 1,
         feeLimit: '100208801',
+        gasPrice: '',
         ceilLedgerSeq: '',
         initInput: ''
     }
@@ -57,7 +58,9 @@ it('test contractQuery', async () => {
     let contractQueryOperation = {
         sourceAddress: '',
         contractAddress: 'did:bid:efL7d2Ak1gyUpU4eiM3C9oxvbkhXr4Mu',
-        input: ''
+        input: '',
+        feeLimit: '',
+        gasPrice: ''
     }
     let data = await sdk.contract.contractQuery(contractQueryOperation)
     console.log('contractQuery() : ', JSON.stringify(data))
@@ -68,11 +71,12 @@ it('test contractQuery', async () => {
  */
 it('test contractInvoke', async () => {
     let contractInvokeOperation = {
-        sourceAddress: 'did:bid:efQMuPahc3zm7abBUBfj22xZokhZ7rED',
-        privateKey: 'priSPKqSR8vTVJ1y8Wu1skBNWMHPeu8nkaerZNKEzkRq3KJix4',
+        sourceAddress: 'did:bid:ef4NWJx2enwNzpnh3w5SJcj9Qhoddaa5',
+        privateKey: 'priSPKkLzxxmGehL534YiXsov9xF8ssioBWuM3xiubDqTERZiE',
         contractAddress: 'did:bid:efL7d2Ak1gyUpU4eiM3C9oxvbkhXr4Mu',
         ceilLedgerSeq: '',
         feeLimit: '',
+        gasPrice: '',
         remarks: 'contractInvoke',
         amount: '1',
         input: ''
