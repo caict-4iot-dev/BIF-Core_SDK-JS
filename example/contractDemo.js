@@ -2,14 +2,18 @@
 
 const BIFCoreSDK = require('../index')
 const sdk = new BIFCoreSDK({
-     host: 'http://test-bif-core.xinghuo.space'
+    // host: 'http://test-bif-core.xinghuo.space'
+    host: 'http://172.17.6.84:10087'
 })
 /**
  * 检测合约账户的有效性
  */
 it('test checkContractAddress', async () => {
-    const contractAddress = 'did:bid:efL7d2Ak1gyUpU4eiM3C9oxvbkhXr4Mu'
-    let data = await sdk.contract.checkContractAddress(contractAddress)
+    let param = {
+        contractAddress: 'did:bid:efL7d2Ak1gyUpU4eiM3C9oxvbkhXr4Mu',
+        domainId: '20'
+    }
+    let data = await sdk.contract.checkContractAddress(param)
     console.log('checkContractAddress() : ', JSON.stringify(data))
 })
 
@@ -26,7 +30,8 @@ it('test createContract', async () => {
         type: 0,
         feeLimit: '100100000',
         ceilLedgerSeq: '',
-        initInput: ''
+        initInput: '',
+        domainId: '20'
     }
     let data = await sdk.contract.createContract(createContractOperation)
     console.log('createContract() : ', JSON.stringify(data))
@@ -36,8 +41,11 @@ it('test createContract', async () => {
  * 根据交易Hash查询合约地址
  */
 it('test getContractAddress', async () => {
-    const hash = '59228dfa8fcd1e65b918dbe30096302f3a4b136d2762200029ed397496f96ada'
-    let data = await sdk.contract.getContractAddress(hash)
+    let param = {
+        hash: '59228dfa8fcd1e65b918dbe30096302f3a4b136d2762200029ed397496f96ada',
+        domainId: '20'
+    }
+    let data = await sdk.contract.getContractAddress(param)
     console.log('getContractAddress() : ', JSON.stringify(data))
 })
 
@@ -45,8 +53,11 @@ it('test getContractAddress', async () => {
  * 查询合约代码。
  */
 it('test getContractInfo', async () => {
-    const contractAddress = 'did:bid:efdzmPKbie68djWpAdyAP8uLY1WtVoXP'
-    let data = await sdk.contract.getContractInfo(contractAddress)
+    let param = {
+        contractAddress: 'did:bid:efdzmPKbie68djWpAdyAP8uLY1WtVoXP',
+        domainId: '20'
+    }
+    let data = await sdk.contract.getContractInfo(param)
     console.log('getContractInfo() : ', JSON.stringify(data))
 })
 
@@ -57,7 +68,8 @@ it('test contractQuery', async () => {
     let contractQueryOperation = {
         sourceAddress: '',
         contractAddress: 'did:bid:efL7d2Ak1gyUpU4eiM3C9oxvbkhXr4Mu',
-        input: ''
+        input: '',
+        domainId: '20'
     }
     let data = await sdk.contract.contractQuery(contractQueryOperation)
     console.log('contractQuery() : ', JSON.stringify(data))
@@ -75,7 +87,8 @@ it('test contractInvoke', async () => {
         feeLimit: '',
         remarks: 'contractInvoke',
         amount: '1',
-        input: ''
+        input: '',
+        domainId: '20'
     }
     let data = await sdk.contract.contractInvoke(contractInvokeOperation)
     console.log('contractInvoke() : ', JSON.stringify(data))
