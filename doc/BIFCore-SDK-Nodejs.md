@@ -2,7 +2,7 @@
 
 ​		本节详细说明BIFCore-SDK-NodeJs常用接口文档。星火链提供 nodejs版 SDK供开发者使用。
 
-​        **github**代码库地址：https://github.com/CAICT-DEV/BIF-Core_SDK-JS
+​        **github**代码库地址：https://github.com/caict-4iot-dev/BIF-Core_SDK-JS
 
 ## 1.1 SDK概述
 
@@ -800,6 +800,7 @@ account.getAccountPriv(param)
 | 4    | getContractAddress   | 该接口用于根据交易Hash查询合约地址 |
 | 5    | contractQuery        | 该接口用于调试合约代码             |
 | 6    | contractInvoke       | 合约调用                           |
+| 7    | batchContractInvoke  | 批量合约调用                       |
 
 ### 1.4.1 checkContractAddress
 
@@ -1146,6 +1147,98 @@ contract.contractInvoke(contractInvokeOperation)
     console.log('contractInvoke() : ',  JSON.stringify(data))
 ```
 
+### 1.4.7 batchContractInvoke
+
+> 接口说明
+
+   	该接口用于批量合约调用。
+
+> 调用方法
+
+```java
+contract.batchContractInvoke(contractInvokeRequestOperation)
+```
+
+> 请求参数
+
+| 参数          | 类型                             | 描述                                                         |
+| ------------- | -------------------------------- | ------------------------------------------------------------ |
+| senderAddress | string                           | 必填，交易源账号，即交易的发起方                             |
+| gasPrice      | Long                             | 选填，打包费用 (单位是PT)默认，默认100L                      |
+| feeLimit      | Long                             | 选填，交易花费的手续费(单位是PT)，默认1000000L               |
+| privateKey    | String                           | 必填，交易源账户私钥                                         |
+| ceilLedgerSeq | Long                             | 选填，区块高度限制, 如果大于0，则交易只有在该区块高度之前（包括该高度）才有效 |
+| remarks       | String                           | 选填，用户自定义给交易的备注                                 |
+| domainId      | Integer                          | 选填，指定域ID，默认主共识域id(0)                            |
+| operations    | List<BIFContractInvokeOperation> | 必填，合约调用集合                                           |
+
+| BIFContractInvokeOperation |        |                                |
+| -------------------------- | ------ | ------------------------------ |
+| contractAddress            | String | 必填，合约账户地址             |
+| BIFAmount                  | Long   | 必填，转账金额                 |
+| input                      | String | 选填，待触发的合约的main()入参 |
+
+
+
+> 响应数据
+
+| 参数 | 类型   | 描述     |
+| ---- | ------ | -------- |
+| hash | string | 交易hash |
+
+
+> 错误码
+
+| 异常                          | 错误码 | 描述                                          |
+| ----------------------------- | ------ | --------------------------------------------- |
+| INVALID_ADDRESS_ERROR         | 11006  | Invalid address                               |
+| REQUEST_NULL_ERROR            | 12001  | Request parameter cannot be null              |
+| PRIVATEKEY_NULL_ERROR         | 11057  | PrivateKeys cannot be empty                   |
+| INVALID_CONTRACTADDRESS_ERROR | 11037  | Invalid contract address                      |
+| INVALID_AMOUNT_ERROR          | 11024  | Amount must be between 0 and Long.MAX_VALUE   |
+| INVALID_FEELIMIT_ERROR        | 11050  | FeeLimit must be between 0 and Long.MAX_VALUE |
+| SYSTEM_ERROR                  | 20000  | System error                                  |
+
+
+> 示例
+
+```js
+     let senderAddress = 'did:bid:efnVUgqQFfYeu97ABf6sGm3WFtVXHZB2'
+    let senderPrivateKey = 'priSPKkWVk418PKAS66q4bsiE2c4dKuSSafZvNWyGGp2sJVtXL'
+    let contractAddress = 'did:bid:efHtDebBjqEsgEVqyiwvHwdPWSnHmkzy'
+    let amount = '0'
+    const destAddress1 = sdk.keypair.getBidAndKeyPair().encAddress
+    const destAddress2 = sdk.keypair.getBidAndKeyPair().encAddress
+    let input1 = '{"method":"creation","params":{"document":{"@context": ["https://w3.org/ns/did/v1"],"context": "https://w3id.org/did/v1","id": "' + destAddress1 + '", "version": "1"}}}'
+    let input2 = '{"method":"creation","params":{"document":{"@context": ["https://w3.org/ns/did/v1"],"context": "https://w3id.org/did/v1","id": "' + destAddress2 + '", "version": "1"}}}'
+
+    let operations = []
+    let contractInvokeOperation1 = {
+        contractAddress: contractAddress,
+        amount: amount,
+        input: input1
+    }
+    let contractInvokeOperation2 = {
+        contractAddress: contractAddress,
+        amount: amount,
+        input: input2
+    }
+    operations.push(contractInvokeOperation1)
+    operations.push(contractInvokeOperation2)
+
+    let contractInvokeRequestOperation = sdk.operaction.contractInvokeRequestOperation
+    contractInvokeRequestOperation.setSenderAddress(senderAddress)
+    contractInvokeRequestOperation.setPrivateKey(senderPrivateKey)
+    contractInvokeRequestOperation.setRemarks('contract invoke')
+    contractInvokeRequestOperation.setDomainId('0')
+    contractInvokeRequestOperation.setCeilLedgerSeq('')
+    contractInvokeRequestOperation.setOperations(operations)
+    let data = await sdk.contract.batchContractInvoke(contractInvokeRequestOperation)
+    console.log('batchContractInvoke() : ', JSON.stringify(data))
+```
+
+
+
 ## 1.5 交易服务接口列表
 
 ​		交易服务接口主要是交易相关的接口，目前有4个接口：
@@ -1156,6 +1249,10 @@ contract.contractInvoke(contractInvokeOperation)
 | 2    | getTransactionInfo | 该接口用于实现根据交易hash查询交易 |
 | 3    | evaluateFee        | 该接口用于交易费用评估             |
 | 4    | BIFSubmit          | 提交交易                           |
+| 5    | getTxCacheSize     | 该接口用于获取交易池中交易条数     |
+| 6    | batchEvaluateFee   | 该接口为批量费用评估接口           |
+| 7    | getTxCacheData     | 该接口用于获取交易池中交易数据     |
+| 8    | parseBlob          | blob数据解析                       |
 
 ### 1.5.1 gasSend
 
@@ -1402,7 +1499,7 @@ transaction.submitTrans(serialization,signData)
 > 示例
 
 ```js
-     // 初始化参数
+   // 初始化参数
     let serialization = 'sss'
     let privateKey = 'priSPKqYp19ghxeCykHUrepLRkCRD3a2a9y5MJGF8Kc4qfn2aK'
     // sign serialization
@@ -1413,9 +1510,229 @@ transaction.submitTrans(serialization,signData)
     let transactionInfo = await sdk.transaction.submitTrans(
         serialization,
         signData
-    )
+    })
     console.log('BIFSubmit() : ',  JSON.stringify(transactionInfo))
 
+```
+
+### 1.5.5 getTxCacheSize
+
+> 接口说明
+
+   	该接口用于获取交易池中交易条数。
+
+> 调用方法
+
+```js
+transaction.getTxCacheSize(domainId)
+```
+
+ > 请求参数
+
+| 参数     | 类型    | 描述                              |
+| -------- | ------- | --------------------------------- |
+| domainId | Integer | 选填，指定域ID，默认主共识域id(0) |
+
+ > 响应数据
+
+| 参数       | 类型 | 描述                 |
+| ---------- | ---- | -------------------- |
+| queue_size | Long | 返回交易池中交易条数 |
+
+> 错误码
+
+| 异常                 | 错误码 | 描述                             |
+| -------------------- | ------ | -------------------------------- |
+| CONNECTNETWORK_ERROR | 11007  | Failed to connect to the network |
+| SYSTEM_ERROR         | 20000  | System error                     |
+
+> 示例
+
+```js
+    it('test getTxCacheSize', async () => {
+        let domainId='20'
+        let data = await sdk.transaction.getTxCacheSize(domainId)
+        console.log('getTxCacheSize() : ', JSON.stringify(data))
+    })
+```
+
+### 1.5.6 batchEvaluateFee
+
+> 接口说明
+
+   	该接口为批量费用评估接口。
+
+> 调用方法
+
+```js
+transaction.batchEvaluateFee(request)
+```
+
+> 请求参数
+
+| 参数          | 类型                    | 描述                              |
+| ------------- | ----------------------- | --------------------------------- |
+| senderAddress | string                  | 必填，交易源账号，即交易的发起方  |
+| privateKey    | String                  | 必填，交易源账户私钥              |
+| operations    | [Operation](#Operation) | 必填，待提交的操作，不能为空      |
+| gasPrice      | Long                    | 必填，打包费用 (单位是PT)         |
+| feeLimit      | Long                    | 选填，交易花费的手续费(单位是PT)  |
+| domainId      | Integer                 | 选填，指定域ID，默认主共识域id(0) |
+
+#### Operation
+
+| 序号 | 操作                    | 描述                         |
+| ---- | ----------------------- | ---------------------------- |
+| 1    | contractInvokeOperation | 合约调用（暂不支持EVM 合约） |
+
+> 响应数据
+
+| 参数     | 类型 | 描述               |
+| -------- | ---- | ------------------ |
+| feeLimit | Long | 交易要求的最低费用 |
+| gasPrice | Long | 交易燃料单价       |
+
+> 错误码
+
+| 异常                          | 错误码 | 描述                                                    |
+| ----------------------------- | ------ | ------------------------------------------------------- |
+| INVALID_SOURCEADDRESS_ERROR   | 11002  | Invalid sourceAddress                                   |
+| OPERATIONS_EMPTY_ERROR        | 11051  | Operations cannot be empty                              |
+| OPERATIONS_ONE_ERROR          | 11053  | One of the operations cannot be resolved                |
+| INVALID_SIGNATURENUMBER_ERROR | 11054  | SignagureNumber must be between 1 and Integer.MAX_VALUE |
+| REQUEST_NULL_ERROR            | 12001  | Request parameter cannot be null                        |
+| SYSTEM_ERROR                  | 20000  | System error                                            |
+| INVALID_DOMAINID_ERROR        | 12007  | Domainid must be equal to or greater than 0             |
+
+
+
+> 示例
+
+```js
+     let amount = '0'
+    const destAddress1 = sdk.keypair.getBidAndKeyPairBySM2().encAddress
+    const destAddress2 = sdk.keypair.getBidAndKeyPairBySM2().encAddress
+    let input1 = '{"method":"creation","params":{"document":{"@context": ["https://w3.org/ns/did/v1"],"context": "https://w3id.org/did/v1","id": "' + destAddress1 + '", "version": "1"}}}'
+    let input2 = '{"method":"creation","params":{"document":{"@context": ["https://w3.org/ns/did/v1"],"context": "https://w3id.org/did/v1","id": "' + destAddress2 + '", "version": "1"}}}'
+
+    let operations = []
+    let contractInvokeOperation1 = {
+        contractAddress: destAddress1,
+        amount: amount,
+        input: input1
+    }
+    let contractInvokeOperation2 = {
+        contractAddress: destAddress2,
+        amount: amount,
+        input: input2
+    }
+    operations.push(contractInvokeOperation1)
+    operations.push(contractInvokeOperation2)
+
+    let request = {
+        sourceAddress: 'did:bid:efnVUgqQFfYeu97ABf6sGm3WFtVXHZB2',
+        privateKey: 'priSPKkWVk418PKAS66q4bsiE2c4dKuSSafZvNWyGGp2sJVtXL',
+        operations: operations,
+        feeLimit: '20',
+        gasPrice: '1',
+        domainId: '0'
+    }
+    let data = await sdk.transaction.batchEvaluateFee(request)
+    console.log('batchEvaluateFee() : ', JSON.stringify(data))
+```
+
+### 1.5.7 getTxCacheData
+
+> 接口说明
+
+   	该接口用于获取交易池中交易数据。
+
+> 调用方法
+
+```js
+transaction.getTxCacheData(request)
+```
+
+> 请求参数
+
+| 参数     | 类型    | 描述                              |
+| -------- | ------- | --------------------------------- |
+| hash     | String  | 选填，交易hash                    |
+| domainId | Integer | 选填，指定域ID，默认主共识域id(0) |
+
+> 响应数据
+
+| 参数                           | 类型     | 描述                 |
+| ------------------------------ | -------- | -------------------- |
+| transactions                   | Object[] | 返回交易池中交易数据 |
+| transactionsp[i].hash          | String   | 交易hash             |
+| transactionsp[i].incoming_time | String   | 进入时间             |
+| transactionsp[i].status        | String   | 状态                 |
+| transactionsp[i].transaction   | Object   |                      |
+
+> 错误码
+
+| 异常                   | 错误码 | 描述                                        |
+| ---------------------- | ------ | ------------------------------------------- |
+| CONNECTNETWORK_ERROR   | 11007  | Failed to connect to the network            |
+| SYSTEM_ERROR           | 20000  | System error                                |
+| INVALID_DOMAINID_ERROR | 12007  | Domainid must be equal to or greater than 0 |
+
+> 示例
+
+```js
+    let request = {
+        domainId: '0',
+        hash: ''
+    }
+    let data = await sdk.transaction.getTxCacheData(request)
+    console.log('getTxCacheData() : ', JSON.stringify(data))
+```
+
+### 1.5.8 parseBlob
+
+> 接口说明
+
+   	该接口用于blob数据解析。
+
+> 调用方法
+
+```js
+transaction.parseBlob(transactionBlob)
+```
+
+> 请求参数
+
+| 参数 | 类型   | 描述       |
+| ---- | ------ | ---------- |
+| blob | String | 必填，BLOB |
+
+> 响应数据
+
+| 参数          | 类型     | 描述                       |
+| ------------- | -------- | -------------------------- |
+| sourceAddress | String   | 交易源账号，即交易的发起方 |
+| nonce         | String   | 账户交易序列号，必须大于0  |
+| fee_limit     | String   | 交易要求的最低费用         |
+| gas_price     | String   | 交易燃料单价               |
+| domain_id     | String   | blob解析出的域ID值         |
+| remarks       | String   | 用户自定义给交易的备注     |
+| operations    | Object[] | 操作对象数组               |
+
+> 错误码
+
+| 异常                        | 错误码 | 描述                             |
+| --------------------------- | ------ | -------------------------------- |
+| INVALID_SERIALIZATION_ERROR | 11056  | Invalid serialization            |
+| CONNECTNETWORK_ERROR        | 11007  | Failed to connect to the network |
+| SYSTEM_ERROR                | 20000  | System error                     |
+
+> 示例
+
+```js
+ let transactionBlob = '0A276469643A6269643A324E4A4C46343931536431553434323270476B50715467686946664B3337751003225C080712276469643A6269643A324E4A4C46343931536431553434323270476B50715467686946664B333775522F0A276469643A6269643A32695277744E53666841753739754A73624C6B78694333374A554C437235791080A9E0870430C0843D38E807'
+    let data = await sdk.transaction.parseBlob(transactionBlob)
+    console.log('parseBlob() : ', JSON.stringify(data))
 ```
 
 
