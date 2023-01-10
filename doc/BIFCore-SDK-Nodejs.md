@@ -907,7 +907,7 @@ contract.createContract(createContractOperation)
         payload:"\"use strict\";function init(bar){/*init whatever you want*/return;}function main(input){let para = JSON.parse(input);if (para.do_foo)\n            {\n              let x = {\n                \'hello\' : \'world\'\n              };\n            }\n          }\n          \n          function query(input)\n          { \n            return input;\n          }\n        ",
         initBalance:'1',
         remarks:'create account',
-        type:0,
+        type:'0',
         feeLimit:'100100000',
         gasPrice:'',
         ceilLedgerSeq:'',
@@ -1139,7 +1139,7 @@ contract.contractInvoke(contractInvokeOperation)
         feeLimit:'',
         gasPrice: '',
         remarks:'contractInvoke',
-        amount:0,
+        amount:'0',
         input:'',
         domainId: '20'
     }
