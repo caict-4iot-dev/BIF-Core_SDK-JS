@@ -1,12 +1,12 @@
-# 6.BIFCore-SDK-NodeJs使用说明
+# 1.BIFCore-SDK-NodeJs使用说明
 
 ​		本节详细说明BIFCore-SDK-NodeJs常用接口文档。星火链提供 nodejs版 SDK供开发者使用。
 
-​        **github**代码库地址：https://github.com/CAICT-DEV/BIF-Core_SDK-JS
+​        **github**代码库地址：https://github.com/caict-4iot-dev/BIF-Core_SDK-JS
 
-## 6.1 SDK概述
+## 1.1 SDK概述
 
-### 6.1.1 名词解析
+### 1.1.1 名词解析
 
 + 账户服务： 提供账户相关的有效性校验、创建与查询接口
 
@@ -18,7 +18,7 @@
 
 + 账户nonce值： 每个账户都维护一个序列号，用于用户提交交易时标识交易执行顺序的
 
-### 6.1.2 请求参数与相应数据格式
+### 1.1.2 请求参数与相应数据格式
 
 + **请求参数**
 
@@ -32,9 +32,9 @@
 
   ```js
   {
-  	errorCode: 0,
-  	errorDesc: '',
-  	result: {}
+  	errorCode:0,
+  	errorDesc:'',
+  	result:{}
   }
   ```
 
@@ -46,13 +46,13 @@
 
   > 因响应数据结构固定，方便起见，后续接口说明中的`响应数据`均指`result`对象的属性
 
-## 6.2 SDK使用方法
+## 1.2 SDK使用方法
 
 ​		本节介绍SDK的使用流程。
 
 ​		首先需要生成SDK实现，然后调用相应服务的接口，其中服务包括账户服务、合约服务、交易服务和区块服务。
 
-### 6.2.1 生成SDK实例
+### 1.2.1 生成SDK实例
 
 ##### 传入参数：
 
@@ -72,7 +72,7 @@ const options = {
 const sdk = new BIFCoreSDK(options)
 ```
 
-### 6.2.2 生成公私钥地址
+### 1.2.2 生成公私钥地址
 
 + **Ed25519算法生成**
 
@@ -96,7 +96,7 @@ const rawPublicKey = KeyPairEntitySM2.rawPublicKey
 const rawPrivateKey = KeyPairEntitySM2.rawPrivateKey
 ```
 
-### 6.2.3 私钥对象使用
+### 1.2.3 私钥对象使用
 
 + **构造对象**
 
@@ -159,7 +159,7 @@ const serialization = 'test'
 const signature = sdk.keypair.sign(serialization,privateKey)
 ```
 
-### 6.2.4 公钥对象使用
+### 1.2.4 公钥对象使用
 
 + **构造对象**
 
@@ -188,11 +188,11 @@ const verify= sdk.keypair.verify(serialization,publicKey)
 
 ```
 
-### 6.2.5 密钥存储器
+### 1.2.5 密钥存储器
 
 + **生成密钥存储器**
 
-```java
+```js
 generateKeyStore(encPrivateKey,password)
 ```
 
@@ -249,7 +249,7 @@ console.log('decipherKeyStore()', JSON.stringify( encPrivateKey))
 
 ```
 
-### 6.2.6 助记词
+### 1.2.6 助记词
 
 + **生成助记词**
 
@@ -308,7 +308,7 @@ console.log('decipherKeyStore()', JSON.stringify( encPrivateKey))
 
 ```
 
-## 6.3 账户服务接口列表
+## 1.3 账户服务接口列表
 
 ​		账户服务接口主要是账户相关的接口，目前有8个接口：
 
@@ -323,7 +323,7 @@ console.log('decipherKeyStore()', JSON.stringify( encPrivateKey))
 | 7    | setPrivilege        | 设置权限                              |
 | 8    | getAccountPriv      | 获取账户权限                          |
 
-### 6.3.1 createAccount
+### 1.3.1 createAccount
 
 > 接口说明
 
@@ -339,16 +339,17 @@ account.createAccount(createAccountOperation)
 
 > 请求参数
 
-| 参数          | 类型   | 描述                                                         |
-| ------------- | ------ | ------------------------------------------------------------ |
-| senderAddress | string | 必填，交易源账号，即交易的发起方                             |
-| privateKey    | String | 必填，交易源账户私钥                                         |
-| ceilLedgerSeq | Long   | 选填，区块高度限制, 如果大于0，则交易只有在该区块高度之前（包括该高度）才有效 |
-| remarks       | String | 选填，用户自定义给交易的备注                                 |
-| destAddress   | String | 必填，目标账户地址                                           |
-| initBalance   | Long   | 必填，初始化星火令，单位PT，1 星火令 = 10^8 PT, 大小(0, Long.MAX_VALUE] |
-| gasPrice      | Long   | 选填，打包费用 (单位是PT)，默认100L                          |
-| feeLimit      | Long   | 选填，交易花费的手续费(单位是PT)，默认1000000L               |
+| 参数          | 类型    | 描述                                                         |
+| ------------- | ------- | ------------------------------------------------------------ |
+| senderAddress | string  | 必填，交易源账号，即交易的发起方                             |
+| privateKey    | String  | 必填，交易源账户私钥                                         |
+| ceilLedgerSeq | Long    | 选填，区块高度限制, 如果大于0，则交易只有在该区块高度之前（包括该高度）才有效 |
+| remarks       | String  | 选填，用户自定义给交易的备注                                 |
+| destAddress   | String  | 必填，目标账户地址                                           |
+| initBalance   | Long    | 必填，初始化星火令，单位PT，1 星火令 = 10^8 PT, 大小(0, Long.MAX_VALUE] |
+| gasPrice      | Long    | 选填，打包费用 (单位是PT)，默认100L                          |
+| feeLimit      | Long    | 选填，交易花费的手续费(单位是PT)，默认1000000L               |
+| domainId      | Integer | 选填，指定域ID，默认主共识域id(0)                            |
 
 > 响应数据
 
@@ -367,6 +368,7 @@ account.createAccount(createAccountOperation)
 | INVALID_DESTADDRESS_ERROR | 11003  | Invalid destAddress                           |
 | INVALID_INITBALANCE_ERROR | 11004  | InitBalance must between 1 and Long.MAX_VALUE |
 | SYSTEM_ERROR              | 20000  | System error                                  |
+| INVALID_DOMAINID_ERROR    | 12007  | Domainid must be equal to or greater than 0   |
 
 
 > 示例
@@ -379,15 +381,16 @@ account.createAccount(createAccountOperation)
           remarks:'create account',
           destAddress:'did:bid:efQMuPahc3zm7abBUBfj22xZokhZ7rED',
           initBalance:'100000000000',
-          ceilLedgerSeq:''，
+          ceilLedgerSeq:'',
      	  gasPrice:'',
-     	  feeLimit:''
+     	  feeLimit:'',
+          domainId:'20'
       }
  let data = await sdk.account.createAccount(createAccountOperation)
   console.log('createAccount() : ',  JSON.stringify(data))
 ```
 
-### 6.3.2 getAccount
+### 1.3.2 getAccount
 
 > 接口说明
 
@@ -396,14 +399,15 @@ account.createAccount(createAccountOperation)
 > 调用方法
 
 ```js
-account.getAccountBalance(address)
+account.getAccountBalance(param)
 ```
 
 > 请求参数
 
-| 参数    | 类型   | 描述                         |
-| ------- | ------ | ---------------------------- |
-| address | String | 必填，待查询的区块链账户地址 |
+| 参数     | 类型    | 描述                              |
+| -------- | ------- | --------------------------------- |
+| address  | String  | 必填，待查询的区块链账户地址      |
+| domainId | Integer | 选填，指定域ID，默认主共识域id(0) |
 
 > 响应数据
 
@@ -415,23 +419,27 @@ account.getAccountBalance(address)
 
 > 错误码
 
-| 异常                  | 错误码 | 描述                             |
-| --------------------- | ------ | -------------------------------- |
-| INVALID_ADDRESS_ERROR | 11006  | Invalid address                  |
-| REQUEST_NULL_ERROR    | 12001  | Request parameter cannot be null |
-| CONNECTNETWORK_ERROR  | 11007  | Failed to connect to the network |
-| SYSTEM_ERROR          | 20000  | System error                     |
+| 异常                   | 错误码 | 描述                                        |
+| ---------------------- | ------ | ------------------------------------------- |
+| INVALID_ADDRESS_ERROR  | 11006  | Invalid address                             |
+| REQUEST_NULL_ERROR     | 12001  | Request parameter cannot be null            |
+| CONNECTNETWORK_ERROR   | 11007  | Failed to connect to the network            |
+| SYSTEM_ERROR           | 20000  | System error                                |
+| INVALID_DOMAINID_ERROR | 12007  | Domainid must be equal to or greater than 0 |
 
 > 示例
 
 ```js
  // 初始化请求参数
-	let address = 'did:bid:eft6d191modv1cxBC43wjKHk85VVhQDc'
- 	let data = await sdk.account.getAccountBalance(address)
+    let param = {
+        address: 'did:bid:eft6d191modv1cxBC43wjKHk85VVhQDc',
+        domainId: '20'
+    }
+ 	let data = await sdk.account.getAccountBalance(param)
     console.log('getAccountBalance() : ',  JSON.stringify(data))
 ```
 
-### 6.3.3 getNonce
+### 1.3.3 getNonce
 
 > 接口说明
 
@@ -439,15 +447,16 @@ account.getAccountBalance(address)
 
 > 调用方法
 
-```java
-getNonce(address)
+```js
+getNonce(param)
 ```
 
 > 请求参数
 
-| 参数    | 类型   | 描述                         |
-| ------- | ------ | ---------------------------- |
-| address | String | 必填，待查询的区块链账户地址 |
+| 参数     | 类型    | 描述                              |
+| -------- | ------- | --------------------------------- |
+| address  | String  | 必填，待查询的区块链账户地址      |
+| domainId | Integer | 选填，指定域ID，默认主共识域id(0) |
 
 > 响应数据
 
@@ -457,23 +466,27 @@ getNonce(address)
 
 > 错误码
 
-| 异常                  | 错误码 | 描述                             |
-| --------------------- | ------ | -------------------------------- |
-| INVALID_ADDRESS_ERROR | 11006  | Invalid address                  |
-| REQUEST_NULL_ERROR    | 12001  | Request parameter cannot be null |
-| CONNECTNETWORK_ERROR  | 11007  | Failed to connect to the network |
-| SYSTEM_ERROR          | 20000  | System error                     |
+| 异常                   | 错误码 | 描述                                        |
+| ---------------------- | ------ | ------------------------------------------- |
+| INVALID_ADDRESS_ERROR  | 11006  | Invalid address                             |
+| REQUEST_NULL_ERROR     | 12001  | Request parameter cannot be null            |
+| CONNECTNETWORK_ERROR   | 11007  | Failed to connect to the network            |
+| SYSTEM_ERROR           | 20000  | System error                                |
+| INVALID_DOMAINID_ERROR | 12007  | Domainid must be equal to or greater than 0 |
 
 > 示例
 
 ```js
 	// 初始化请求参数
-	let address = 'did:bid:eft6d191modv1cxBC43wjKHk85VVhQDc'
-	let data = await sdk.account.getNonce(address)
+    let param = {
+        address: 'did:bid:eft6d191modv1cxBC43wjKHk85VVhQDc',
+        domainId: '20'
+    }
+	let data = await sdk.account.getNonce(param)
  	console.log('getNonce() : ',  JSON.stringify(data))
 ```
 
-### 6.3.4 getAccountBalance
+### 1.3.4 getAccountBalance
 
 > 接口说明
 
@@ -482,14 +495,15 @@ getNonce(address)
 > 调用方法
 
 ```js
-account.getAccountBalance(address)
+account.getAccountBalance(param)
 ```
 
 > 请求参数
 
-| 参数    | 类型   | 描述                         |
-| ------- | ------ | ---------------------------- |
-| address | String | 必填，待查询的区块链账户地址 |
+| 参数     | 类型    | 描述                              |
+| -------- | ------- | --------------------------------- |
+| address  | String  | 必填，待查询的区块链账户地址      |
+| domainId | Integer | 选填，指定域ID，默认主共识域id(0) |
 
 > 响应数据
 
@@ -499,23 +513,27 @@ account.getAccountBalance(address)
 
 > 错误码
 
-| 异常                  | 错误码 | 描述                             |
-| --------------------- | ------ | -------------------------------- |
-| INVALID_ADDRESS_ERROR | 11006  | Invalid address                  |
-| REQUEST_NULL_ERROR    | 12001  | Request parameter cannot be null |
-| CONNECTNETWORK_ERROR  | 11007  | Failed to connect to the network |
-| SYSTEM_ERROR          | 20000  | System error                     |
+| 异常                   | 错误码 | 描述                                        |
+| ---------------------- | ------ | ------------------------------------------- |
+| INVALID_ADDRESS_ERROR  | 11006  | Invalid address                             |
+| REQUEST_NULL_ERROR     | 12001  | Request parameter cannot be null            |
+| CONNECTNETWORK_ERROR   | 11007  | Failed to connect to the network            |
+| SYSTEM_ERROR           | 20000  | System error                                |
+| INVALID_DOMAINID_ERROR | 12007  | Domainid must be equal to or greater than 0 |
 
 > 示例
 
 ```js
     // 初始化请求参数
-	let address = 'did:bid:eft6d191modv1cxBC43wjKHk85VVhQDc'
-    let data = await sdk.account.getAccountBalance(address)
+    let param = {
+        address: 'did:bid:eft6d191modv1cxBC43wjKHk85VVhQDc',
+        domainId: '20'
+    }
+    let data = await sdk.account.getAccountBalance(param)
     console.log('getAccountBalance() : ',  JSON.stringify(data))
 ```
 
-### 6.3.5 setMetadatas
+### 1.3.5 setMetadatas
 
 > 接口说明
 
@@ -541,6 +559,7 @@ account.setMetadatas(setMetadatasOperation)
 | deleteFlag    | Boolean | 选填，是否删除remarks                                        |
 | gasPrice      | Long    | 选填，打包费用 (单位是PT)，默认100L                          |
 | feeLimit      | Long    | 选填，交易花费的手续费(单位是PT)，默认1000000L               |
+| domainId      | Integer | 选填，指定域ID，默认主共识域id(0)                            |
 
 > 响应数据
 
@@ -559,6 +578,7 @@ account.setMetadatas(setMetadatasOperation)
 | INVALID_DATAKEY_ERROR   | 11011  | The length of key must be between 1 and 1024     |
 | INVALID_DATAVALUE_ERROR | 11012  | The length of value must be between 0 and 256000 |
 | SYSTEM_ERROR            | 20000  | System error                                     |
+| INVALID_DOMAINID_ERROR  | 12007  | Domainid must be equal to or greater than 0      |
 
 
 > 示例
@@ -574,13 +594,14 @@ account.setMetadatas(setMetadatasOperation)
       version:'1',
       gasPrice:'',
       feeLimit:'',
-      ceilLedgerSeq: ''
+      ceilLedgerSeq: '',
+      domainId:'20'
     }
     let data = await sdk.account.setMetadatas(setMetadatasOperation)
     console.log('setMetadatas() : ',JSON.stringify(data))
 ```
 
-### 6.3.6 getAccountMetadatas
+### 1.3.6 getAccountMetadatas
 
 > 接口说明
 
@@ -594,10 +615,11 @@ account.getMetadatas(getMetadatasOperation)
 
 > 请求参数
 
-| 参数    | 类型   | 描述                                                         |
-| ------- | ------ | ------------------------------------------------------------ |
-| address | String | 必填，待查询的账户地址                                       |
-| key     | String | 选填，metadatas关键字，长度限制[1, 1024]，有值为精确查找，无值为全部查找 |
+| 参数     | 类型    | 描述                                                         |
+| -------- | ------- | ------------------------------------------------------------ |
+| address  | String  | 必填，待查询的账户地址                                       |
+| key      | String  | 选填，metadatas关键字，长度限制[1, 1024]，有值为精确查找，无值为全部查找 |
+| domainId | Integer | 选填，指定域ID，默认主共识域id(0)                            |
 
 > 响应数据
 
@@ -611,14 +633,15 @@ account.getMetadatas(getMetadatasOperation)
 
 > 错误码
 
-| 异常                  | 错误码 | 描述                                         |
-| --------------------- | ------ | -------------------------------------------- |
-| INVALID_ADDRESS_ERROR | 11006  | Invalid address                              |
-| REQUEST_NULL_ERROR    | 12001  | Request parameter cannot be null             |
-| CONNECTNETWORK_ERROR  | 11007  | Failed to connect to the network             |
-| NO_METADATAS_ERROR    | 11010  | The account does not have the metadatas      |
-| INVALID_DATAKEY_ERROR | 11011  | The length of key must be between 1 and 1024 |
-| SYSTEM_ERROR          | 20000  | System error                                 |
+| 异常                   | 错误码 | 描述                                         |
+| ---------------------- | ------ | -------------------------------------------- |
+| INVALID_ADDRESS_ERROR  | 11006  | Invalid address                              |
+| REQUEST_NULL_ERROR     | 12001  | Request parameter cannot be null             |
+| CONNECTNETWORK_ERROR   | 11007  | Failed to connect to the network             |
+| NO_METADATAS_ERROR     | 11010  | The account does not have the metadatas      |
+| INVALID_DATAKEY_ERROR  | 11011  | The length of key must be between 1 and 1024 |
+| SYSTEM_ERROR           | 20000  | System error                                 |
+| INVALID_DOMAINID_ERROR | 12007  | Domainid must be equal to or greater than 0  |
 
 
 > 示例
@@ -627,12 +650,13 @@ account.getMetadatas(getMetadatasOperation)
     // 初始化请求参数
 	let data = await sdk.account.getMetadatas({
           address: 'did:bid:eft6d191modv1cxBC43wjKHk85VVhQDc',
-          key: '20211208'
+          key: '20211208',
+          domainId: '20' 
       })
     console.log('getMetadatas() : ',JSON.stringify(data))
 ```
 
-### 6.3.7 setPrivilege
+### 1.3.7 setPrivilege
 
 > 接口说明
 
@@ -646,22 +670,23 @@ setPrivilege(accountSetPrivilegeOperation)
 
 > 请求参数
 
-| 参数                    | 类型   | 描述                                                         |
-| ----------------------- | ------ | ------------------------------------------------------------ |
-| senderAddress           | string | 必填，交易源账号，即交易的发起方                             |
-| privateKey              | String | 必填，交易源账户私钥                                         |
-| ceilLedgerSeq           | Long   | 选填，区块高度限制, 如果大于0，则交易只有在该区块高度之前（包括该高度）才有效 |
-| remarks                 | String | 选填，用户自定义给交易的备注                                 |
-| signers                 | list   | 选填，签名者权重列表                                         |
-| signers.address         | String | 签名者区块链账户地址                                         |
-| signers.weight          | Long   | 为签名者设置权重值                                           |
-| txThreshold             | String | 选填，交易门限，大小限制[0, Long.MAX_VALUE]                  |
-| typeThreshold           | list   | 选填，指定类型交易门限                                       |
-| typeThreshold.type      | Long   | 操作类型，必须大于0                                          |
-| typeThreshold.threshold | Long   | 门限值，大小限制[0, Long.MAX_VALUE]                          |
-| masterWeight            | String | 选填                                                         |
-| gasPrice                | Long   | 选填，打包费用 (单位是PT)，默认100L                          |
-| feeLimit                | Long   | 选填，交易花费的手续费(单位是PT)，默认1000000L               |
+| 参数                    | 类型    | 描述                                                         |
+| ----------------------- | ------- | ------------------------------------------------------------ |
+| senderAddress           | string  | 必填，交易源账号，即交易的发起方                             |
+| privateKey              | String  | 必填，交易源账户私钥                                         |
+| ceilLedgerSeq           | Long    | 选填，区块高度限制, 如果大于0，则交易只有在该区块高度之前（包括该高度）才有效 |
+| remarks                 | String  | 选填，用户自定义给交易的备注                                 |
+| signers                 | list    | 选填，签名者权重列表                                         |
+| signers.address         | String  | 签名者区块链账户地址                                         |
+| signers.weight          | Long    | 为签名者设置权重值                                           |
+| txThreshold             | String  | 选填，交易门限，大小限制[0, Long.MAX_VALUE]                  |
+| typeThreshold           | list    | 选填，指定类型交易门限                                       |
+| typeThreshold.type      | Long    | 操作类型，必须大于0                                          |
+| typeThreshold.threshold | Long    | 门限值，大小限制[0, Long.MAX_VALUE]                          |
+| masterWeight            | String  | 选填                                                         |
+| gasPrice                | Long    | 选填，打包费用 (单位是PT)，默认100L                          |
+| feeLimit                | Long    | 选填，交易花费的手续费(单位是PT)，默认1000000L               |
+| domainId                | Integer | 选填，指定域ID，默认主共识域id(0)                            |
 
 > 响应数据
 
@@ -672,12 +697,13 @@ setPrivilege(accountSetPrivilegeOperation)
 
 > 错误码
 
-| 异常                  | 错误码 | 描述                             |
-| --------------------- | ------ | -------------------------------- |
-| INVALID_ADDRESS_ERROR | 11006  | Invalid address                  |
-| REQUEST_NULL_ERROR    | 12001  | Request parameter cannot be null |
-| PRIVATEKEY_NULL_ERROR | 11057  | PrivateKeys cannot be empty      |
-| SYSTEM_ERROR          | 20000  | System error                     |
+| 异常                   | 错误码 | 描述                                        |
+| ---------------------- | ------ | ------------------------------------------- |
+| INVALID_ADDRESS_ERROR  | 11006  | Invalid address                             |
+| REQUEST_NULL_ERROR     | 12001  | Request parameter cannot be null            |
+| PRIVATEKEY_NULL_ERROR  | 11057  | PrivateKeys cannot be empty                 |
+| SYSTEM_ERROR           | 20000  | System error                                |
+| INVALID_DOMAINID_ERROR | 12007  | Domainid must be equal to or greater than 0 |
 
 
 > 示例
@@ -698,13 +724,14 @@ setPrivilege(accountSetPrivilegeOperation)
      }],
      feeLimit: '',
      gasPrice: '',
-     ceilLedgerSeq: ''
+     ceilLedgerSeq: '',
+     domainId: '20'
    }
    let data = await sdk.account.setPrivilege(accountSetPrivilegeOperation)
     console.log('setPrivilege() : ',JSON.stringify(data))
 ```
 
-### 6.3.8 getAccountPriv
+### 1.3.8 getAccountPriv
 
 > 接口说明
 
@@ -713,14 +740,15 @@ setPrivilege(accountSetPrivilegeOperation)
 > 调用方法
 
 ```js
-account.getAccountPriv(address)
+account.getAccountPriv(param)
 ```
 
 > 请求参数
 
-| 参数    | 类型   | 描述                         |
-| ------- | ------ | ---------------------------- |
-| address | String | 必填，待查询的区块链账户地址 |
+| 参数     | 类型    | 描述                              |
+| -------- | ------- | --------------------------------- |
+| address  | String  | 必填，待查询的区块链账户地址      |
+| domainId | Integer | 选填，指定域ID，默认主共识域id(0) |
 
 > 响应数据
 
@@ -740,23 +768,27 @@ account.getAccountPriv(address)
 
 > 错误码
 
-| 异常                  | 错误码 | 描述                             |
-| --------------------- | ------ | -------------------------------- |
-| INVALID_ADDRESS_ERROR | 11006  | Invalid address                  |
-| REQUEST_NULL_ERROR    | 12001  | Request parameter cannot be null |
-| CONNECTNETWORK_ERROR  | 11007  | Failed to connect to the network |
-| SYSTEM_ERROR          | 20000  | System error                     |
+| 异常                   | 错误码 | 描述                                        |
+| ---------------------- | ------ | ------------------------------------------- |
+| INVALID_ADDRESS_ERROR  | 11006  | Invalid address                             |
+| REQUEST_NULL_ERROR     | 12001  | Request parameter cannot be null            |
+| CONNECTNETWORK_ERROR   | 11007  | Failed to connect to the network            |
+| SYSTEM_ERROR           | 20000  | System error                                |
+| INVALID_DOMAINID_ERROR | 12007  | Domainid must be equal to or greater than 0 |
 
 > 示例
 
 ```js
     // 初始化请求参数
-	let address = 'did:bid:efMrjMzYWUBBLZBwgsWtxEvdfQe5wejB'
-    let data = await sdk.account.getAccountPriv(address)
-   console.log('getAccountPriv() : ',  JSON.stringify(data))
+    let param = {
+        address: 'did:bid:efMrjMzYWUBBLZBwgsWtxEvdfQe5wejB',
+        domainId: '20'
+    }
+    let data = await sdk.account.getAccountPriv(param)
+    console.log('getAccountPriv() : ',  JSON.stringify(data))
 ```
 
-## 6.4 合约服务接口列表
+## 1.4 合约服务接口列表
 
 ​		合约服务接口主要是合约相关的接口，目前有6个接口：
 
@@ -768,8 +800,9 @@ account.getAccountPriv(address)
 | 4    | getContractAddress   | 该接口用于根据交易Hash查询合约地址 |
 | 5    | contractQuery        | 该接口用于调试合约代码             |
 | 6    | contractInvoke       | 合约调用                           |
+| 7    | batchContractInvoke  | 批量合约调用                       |
 
-### 6.4.1 checkContractAddress
+### 1.4.1 checkContractAddress
 
 > 接口说明
 
@@ -778,14 +811,15 @@ account.getAccountPriv(address)
 > 调用方法
 
 ```js
-contract.checkContractAddress(contractAddress)
+contract.checkContractAddress(param)
 ```
 
 > 请求参数
 
-| 参数            | 类型   | 描述                 |
-| --------------- | ------ | -------------------- |
-| contractAddress | String | 待检测的合约账户地址 |
+| 参数            | 类型    | 描述                              |
+| --------------- | ------- | --------------------------------- |
+| contractAddress | String  | 待检测的合约账户地址              |
+| domainId        | Integer | 选填，指定域ID，默认主共识域id(0) |
 
 > 响应数据
 
@@ -795,22 +829,26 @@ contract.checkContractAddress(contractAddress)
 
 > 错误码
 
-| 异常                          | 错误码 | 描述                             |
-| ----------------------------- | ------ | -------------------------------- |
-| INVALID_CONTRACTADDRESS_ERROR | 11037  | Invalid contract address         |
-| REQUEST_NULL_ERROR            | 12001  | Request parameter cannot be null |
-| SYSTEM_ERROR                  | 20000  | System error                     |
+| 异常                          | 错误码 | 描述                                        |
+| ----------------------------- | ------ | ------------------------------------------- |
+| INVALID_CONTRACTADDRESS_ERROR | 11037  | Invalid contract address                    |
+| REQUEST_NULL_ERROR            | 12001  | Request parameter cannot be null            |
+| SYSTEM_ERROR                  | 20000  | System error                                |
+| INVALID_DOMAINID_ERROR        | 12007  | Domainid must be equal to or greater than 0 |
 
 > 示例
 
 ```js
     // 初始化请求参数
-	const contractAddress='did:bid:efL7d2Ak1gyUpU4eiM3C9oxvbkhXr4Mu'
-    let data = await sdk.contract.checkContractAddress(contractAddress)
+    let param = {
+        contractAddress: 'did:bid:efL7d2Ak1gyUpU4eiM3C9oxvbkhXr4Mu',
+        domainId: '20'
+    }
+    let data = await sdk.contract.checkContractAddress(param)
     console.log('checkContractAddress() : ',  JSON.stringify(data))
 ```
 
-### 6.4.2 contractCreate
+### 1.4.2 contractCreate
 
 > 接口说明
 
@@ -836,6 +874,7 @@ contract.createContract(createContractOperation)
 | payload       | String  | 必填，对应语种的合约代码                                     |
 | initInput     | String  | 选填，合约代码中init方法的入参                               |
 | gasPrice      | Long    | 选填，打包费用 (单位是PT)，默认100L                          |
+| domainId      | Integer | 选填，指定域ID，默认主共识域id(0)                            |
 
 > 响应数据
 
@@ -855,6 +894,7 @@ contract.createContract(createContractOperation)
 | PAYLOAD_EMPTY_ERROR       | 11044  | Payload cannot be empty                          |
 | INVALID_FEELIMIT_ERROR    | 11050  | FeeLimit must be between 0 and Long.MAX_VALUE    |
 | SYSTEM_ERROR              | 20000  | System error                                     |
+| INVALID_DOMAINID_ERROR    | 12007  | Domainid must be equal to or greater than 0      |
 
 
 > 示例
@@ -867,17 +907,18 @@ contract.createContract(createContractOperation)
         payload:"\"use strict\";function init(bar){/*init whatever you want*/return;}function main(input){let para = JSON.parse(input);if (para.do_foo)\n            {\n              let x = {\n                \'hello\' : \'world\'\n              };\n            }\n          }\n          \n          function query(input)\n          { \n            return input;\n          }\n        ",
         initBalance:'1',
         remarks:'create account',
-        type:0,
+        type:'0',
         feeLimit:'100100000',
         gasPrice:'',
         ceilLedgerSeq:'',
-        initInput:''
+        initInput:'',
+        domainId: '20'
     }
     let data = await sdk.contract.createContract(createContractOperation)
     console.log('createContract() : ',  JSON.stringify(data))
 ```
 
-### 6.4.3 getContractInfo
+### 1.4.3 getContractInfo
 
 > 接口说明
 
@@ -886,14 +927,15 @@ contract.createContract(createContractOperation)
 > 调用方法
 
 ```js
-contract.getContractInfo(contractAddress)
+contract.getContractInfo(param)
 ```
 
 > 请求参数
 
-| 参数            | 类型   | 描述                 |
-| --------------- | ------ | -------------------- |
-| contractAddress | String | 待查询的合约账户地址 |
+| 参数            | 类型    | 描述                              |
+| --------------- | ------- | --------------------------------- |
+| contractAddress | String  | 待查询的合约账户地址              |
+| domainId        | Integer | 选填，指定域ID，默认主共识域id(0) |
 
 > 响应数据
 
@@ -905,25 +947,29 @@ contract.getContractInfo(contractAddress)
 
 > 错误码
 
-| 异常                                      | 错误码 | 描述                                      |
-| ----------------------------------------- | ------ | ----------------------------------------- |
-| INVALID_CONTRACTADDRESS_ERROR             | 11037  | Invalid contract address                  |
-| CONTRACTADDRESS_NOT_CONTRACTACCOUNT_ERROR | 11038  | contractAddress is not a contract account |
-| NO_SUCH_TOKEN_ERROR                       | 11030  | No such token                             |
-| GET_TOKEN_INFO_ERROR                      | 11066  | Failed to get token info                  |
-| REQUEST_NULL_ERROR                        | 12001  | Request parameter cannot be null          |
-| SYSTEM_ERROR                              | 20000  | System error                              |
+| 异常                                      | 错误码 | 描述                                        |
+| ----------------------------------------- | ------ | ------------------------------------------- |
+| INVALID_CONTRACTADDRESS_ERROR             | 11037  | Invalid contract address                    |
+| CONTRACTADDRESS_NOT_CONTRACTACCOUNT_ERROR | 11038  | contractAddress is not a contract account   |
+| NO_SUCH_TOKEN_ERROR                       | 11030  | No such token                               |
+| GET_TOKEN_INFO_ERROR                      | 11066  | Failed to get token info                    |
+| REQUEST_NULL_ERROR                        | 12001  | Request parameter cannot be null            |
+| SYSTEM_ERROR                              | 20000  | System error                                |
+| INVALID_DOMAINID_ERROR                    | 12007  | Domainid must be equal to or greater than 0 |
 
 > 示例
 
 ```js
     // 初始化请求参数
-	const contractAddress='did:bid:efL7d2Ak1gyUpU4eiM3C9oxvbkhXr4Mu'
-    let data = await sdk.contract.getContractInfo(contractAddress)
+    let param = {
+        contractAddress: 'did:bid:efL7d2Ak1gyUpU4eiM3C9oxvbkhXr4Mu',
+        domainId: '20'
+    }
+    let data = await sdk.contract.getContractInfo(param)
     console.log('getContractInfo() : ',  JSON.stringify(data))
 ```
 
-### 6.4.4 getContractAddress
+### 1.4.4 getContractAddress
 
 > 接口说明
 
@@ -934,14 +980,15 @@ contract.getContractInfo(contractAddress)
 > 调用方法
 
 ```js
-contract.getContractAddress(hash)
+contract.getContractAddress(param)
 ```
 
 > 请求参数
 
-| 参数 | 类型   | 描述               |
-| ---- | ------ | ------------------ |
-| hash | String | 创建合约交易的hash |
+| 参数     | 类型    | 描述                              |
+| -------- | ------- | --------------------------------- |
+| hash     | String  | 创建合约交易的hash                |
+| domainId | Integer | 选填，指定域ID，默认主共识域id(0) |
 
 > 响应数据
 
@@ -953,23 +1000,27 @@ contract.getContractAddress(hash)
 
 > 错误码
 
-| 异常                 | 错误码 | 描述                             |
-| -------------------- | ------ | -------------------------------- |
-| INVALID_HASH_ERROR   | 11055  | Invalid transaction hash         |
-| CONNECTNETWORK_ERROR | 11007  | Failed to connect to the network |
-| REQUEST_NULL_ERROR   | 12001  | Request parameter cannot be null |
-| SYSTEM_ERROR         | 20000  | System error                     |
+| 异常                   | 错误码 | 描述                                        |
+| ---------------------- | ------ | ------------------------------------------- |
+| INVALID_HASH_ERROR     | 11055  | Invalid transaction hash                    |
+| CONNECTNETWORK_ERROR   | 11007  | Failed to connect to the network            |
+| REQUEST_NULL_ERROR     | 12001  | Request parameter cannot be null            |
+| SYSTEM_ERROR           | 20000  | System error                                |
+| INVALID_DOMAINID_ERROR | 12007  | Domainid must be equal to or greater than 0 |
 
 > 示例
 
 ```js
     // 初始化请求参数
-	const hash='59228dfa8fcd1e65b918dbe30096302f3a4b136d2762200029ed397496f96ada'
-    let data = await sdk.contract.getContractAddress(hash)
+    let param = {
+        hash: '59228dfa8fcd1e65b918dbe30096302f3a4b136d2762200029ed397496f96ada',
+        domainId: '20'
+    }
+    let data = await sdk.contract.getContractAddress(param)
     console.log('getContractAddress() : ',  JSON.stringify(data))
 ```
 
-### 6.4.5 contractQuery
+### 1.4.5 contractQuery
 
 > 接口说明
 
@@ -983,13 +1034,14 @@ contract.contractQuery(contractQueryOperation)
 
 > 请求参数
 
-| 参数            | 类型   | 描述                                           |
-| --------------- | ------ | ---------------------------------------------- |
-| sourceAddress   | String | 选填，合约触发账户地址                         |
-| contractAddress | String | 必填，合约账户地址                             |
-| input           | String | 选填，合约入参                                 |
-| gasPrice        | Long   | 选填，打包费用 (单位是PT)，默认100L            |
-| feeLimit        | Long   | 选填，交易花费的手续费(单位是PT)，默认1000000L |
+| 参数            | 类型    | 描述                                           |
+| --------------- | ------- | ---------------------------------------------- |
+| sourceAddress   | String  | 选填，合约触发账户地址                         |
+| contractAddress | String  | 必填，合约账户地址                             |
+| input           | String  | 选填，合约入参                                 |
+| gasPrice        | Long    | 选填，打包费用 (单位是PT)，默认100L            |
+| feeLimit        | Long    | 选填，交易花费的手续费(单位是PT)，默认1000000L |
+| domainId        | Integer | 选填，指定域ID，默认主共识域id(0)              |
 
 
 > 响应数据
@@ -1008,6 +1060,7 @@ contract.contractQuery(contractQueryOperation)
 | REQUEST_NULL_ERROR                        | 12001  | Request parameter cannot be null                 |
 | CONNECTNETWORK_ERROR                      | 11007  | Failed to connect to the network                 |
 | SYSTEM_ERROR                              | 20000  | System error                                     |
+| INVALID_DOMAINID_ERROR                    | 12007  | Domainid must be equal to or greater than 0      |
 
 > 示例
 
@@ -1018,13 +1071,14 @@ contract.contractQuery(contractQueryOperation)
         contractAddress:'did:bid:efL7d2Ak1gyUpU4eiM3C9oxvbkhXr4Mu',
         input:'',
         feeLimit: '',
-        gasPrice: ''
+        gasPrice: '',
+        domainId: '20'
     }
     let data = await sdk.contract.contractQuery(contractQueryOperation)
     console.log('contractQuery() : ',  JSON.stringify(data))
 ```
 
-### 6.4.6 contractInvoke
+### 1.4.6 contractInvoke
 
 > 接口说明
 
@@ -1032,23 +1086,24 @@ contract.contractQuery(contractQueryOperation)
 
 > 调用方法
 
-```java
+```js
 contract.contractInvoke(contractInvokeOperation)
 ```
 
 > 请求参数
 
-| 参数            | 类型   | 描述                                                         |
-| --------------- | ------ | ------------------------------------------------------------ |
-| senderAddress   | string | 必填，交易源账号，即交易的发起方                             |
-| feeLimit        | Long   | 选填，交易花费的手续费(单位是PT)，默认1000000L               |
-| privateKey      | String | 必填，交易源账户私钥                                         |
-| ceilLedgerSeq   | Long   | 选填，区块高度限制, 如果大于0，则交易只有在该区块高度之前（包括该高度）才有效 |
-| remarks         | String | 选填，用户自定义给交易的备注                                 |
-| contractAddress | String | 必填，合约账户地址                                           |
-| amount          | Long   | 必填，转账金额                                               |
-| input           | String | 选填，待触发的合约的main()入参                               |
-| gasPrice        | Long   | 选填，打包费用 (单位是PT)，默认100L                          |
+| 参数            | 类型    | 描述                                                         |
+| --------------- | ------- | ------------------------------------------------------------ |
+| senderAddress   | string  | 必填，交易源账号，即交易的发起方                             |
+| feeLimit        | Long    | 选填，交易花费的手续费(单位是PT)，默认1000000L               |
+| privateKey      | String  | 必填，交易源账户私钥                                         |
+| ceilLedgerSeq   | Long    | 选填，区块高度限制, 如果大于0，则交易只有在该区块高度之前（包括该高度）才有效 |
+| remarks         | String  | 选填，用户自定义给交易的备注                                 |
+| contractAddress | String  | 必填，合约账户地址                                           |
+| amount          | Long    | 必填，转账金额                                               |
+| input           | String  | 选填，待触发的合约的main()入参                               |
+| gasPrice        | Long    | 选填，打包费用 (单位是PT)，默认100L                          |
+| domainId        | Integer | 选填，指定域ID，默认主共识域id(0)                            |
 
 > 响应数据
 
@@ -1069,6 +1124,7 @@ contract.contractInvoke(contractInvokeOperation)
 | INVALID_FEELIMIT_ERROR        | 11050  | FeeLimit must be between 0 and Long.MAX_VALUE |
 | SYSTEM_ERROR                  | 20000  | System error                                  |
 | INVALID_GASPRICE_ERROR        | 11049  | GasPrice must be between 0 and Long.MAX_VALUE |
+| INVALID_DOMAINID_ERROR        | 12007  | Domainid must be equal to or greater than 0   |
 
 
 > 示例
@@ -1083,27 +1139,122 @@ contract.contractInvoke(contractInvokeOperation)
         feeLimit:'',
         gasPrice: '',
         remarks:'contractInvoke',
-        amount:0,
-        input:''
+        amount:'0',
+        input:'',
+        domainId: '20'
     }
     let data = await sdk.contract.contractInvoke(contractInvokeOperation)
     console.log('contractInvoke() : ',  JSON.stringify(data))
 ```
 
-## 6.5 交易服务接口列表
+### 1.4.7 batchContractInvoke
 
-​		交易服务接口主要是交易相关的接口，目前有6个接口：
+> 接口说明
 
-| 序号 | 接口                  | 说明                               |
-| ---- | --------------------- | ---------------------------------- |
-| 1    | gasSend               | 交易                               |
-| 2    | privateContractCreate | 私有化交易-合约创建                |
-| 3    | privateContractCall   | 私有化交易-合约调用                |
-| 4    | getTransactionInfo    | 该接口用于实现根据交易hash查询交易 |
-| 5    | evaluateFee           | 该接口用于交易费用评估             |
-| 6    | BIFSubmit             | 提交交易                           |
+   	该接口用于批量合约调用。
 
-### 6.5.1 gasSend
+> 调用方法
+
+```java
+contract.batchContractInvoke(contractInvokeRequestOperation)
+```
+
+> 请求参数
+
+| 参数          | 类型                             | 描述                                                         |
+| ------------- | -------------------------------- | ------------------------------------------------------------ |
+| senderAddress | string                           | 必填，交易源账号，即交易的发起方                             |
+| gasPrice      | Long                             | 选填，打包费用 (单位是PT)默认，默认100L                      |
+| feeLimit      | Long                             | 选填，交易花费的手续费(单位是PT)，默认1000000L               |
+| privateKey    | String                           | 必填，交易源账户私钥                                         |
+| ceilLedgerSeq | Long                             | 选填，区块高度限制, 如果大于0，则交易只有在该区块高度之前（包括该高度）才有效 |
+| remarks       | String                           | 选填，用户自定义给交易的备注                                 |
+| domainId      | Integer                          | 选填，指定域ID，默认主共识域id(0)                            |
+| operations    | List<BIFContractInvokeOperation> | 必填，合约调用集合                                           |
+
+| BIFContractInvokeOperation |        |                                |
+| -------------------------- | ------ | ------------------------------ |
+| contractAddress            | String | 必填，合约账户地址             |
+| BIFAmount                  | Long   | 必填，转账金额                 |
+| input                      | String | 选填，待触发的合约的main()入参 |
+
+
+
+> 响应数据
+
+| 参数 | 类型   | 描述     |
+| ---- | ------ | -------- |
+| hash | string | 交易hash |
+
+
+> 错误码
+
+| 异常                          | 错误码 | 描述                                          |
+| ----------------------------- | ------ | --------------------------------------------- |
+| INVALID_ADDRESS_ERROR         | 11006  | Invalid address                               |
+| REQUEST_NULL_ERROR            | 12001  | Request parameter cannot be null              |
+| PRIVATEKEY_NULL_ERROR         | 11057  | PrivateKeys cannot be empty                   |
+| INVALID_CONTRACTADDRESS_ERROR | 11037  | Invalid contract address                      |
+| INVALID_AMOUNT_ERROR          | 11024  | Amount must be between 0 and Long.MAX_VALUE   |
+| INVALID_FEELIMIT_ERROR        | 11050  | FeeLimit must be between 0 and Long.MAX_VALUE |
+| SYSTEM_ERROR                  | 20000  | System error                                  |
+
+
+> 示例
+
+```js
+     let senderAddress = 'did:bid:efnVUgqQFfYeu97ABf6sGm3WFtVXHZB2'
+    let senderPrivateKey = 'priSPKkWVk418PKAS66q4bsiE2c4dKuSSafZvNWyGGp2sJVtXL'
+    let contractAddress = 'did:bid:efHtDebBjqEsgEVqyiwvHwdPWSnHmkzy'
+    let amount = '0'
+    const destAddress1 = sdk.keypair.getBidAndKeyPair().encAddress
+    const destAddress2 = sdk.keypair.getBidAndKeyPair().encAddress
+    let input1 = '{"method":"creation","params":{"document":{"@context": ["https://w3.org/ns/did/v1"],"context": "https://w3id.org/did/v1","id": "' + destAddress1 + '", "version": "1"}}}'
+    let input2 = '{"method":"creation","params":{"document":{"@context": ["https://w3.org/ns/did/v1"],"context": "https://w3id.org/did/v1","id": "' + destAddress2 + '", "version": "1"}}}'
+
+    let operations = []
+    let contractInvokeOperation1 = {
+        contractAddress: contractAddress,
+        amount: amount,
+        input: input1
+    }
+    let contractInvokeOperation2 = {
+        contractAddress: contractAddress,
+        amount: amount,
+        input: input2
+    }
+    operations.push(contractInvokeOperation1)
+    operations.push(contractInvokeOperation2)
+
+    let contractInvokeRequestOperation = sdk.operaction.contractInvokeRequestOperation
+    contractInvokeRequestOperation.setSenderAddress(senderAddress)
+    contractInvokeRequestOperation.setPrivateKey(senderPrivateKey)
+    contractInvokeRequestOperation.setRemarks('contract invoke')
+    contractInvokeRequestOperation.setDomainId('0')
+    contractInvokeRequestOperation.setCeilLedgerSeq('')
+    contractInvokeRequestOperation.setOperations(operations)
+    let data = await sdk.contract.batchContractInvoke(contractInvokeRequestOperation)
+    console.log('batchContractInvoke() : ', JSON.stringify(data))
+```
+
+
+
+## 1.5 交易服务接口列表
+
+​		交易服务接口主要是交易相关的接口，目前有4个接口：
+
+| 序号 | 接口               | 说明                               |
+| ---- | ------------------ | ---------------------------------- |
+| 1    | gasSend            | 交易                               |
+| 2    | getTransactionInfo | 该接口用于实现根据交易hash查询交易 |
+| 3    | evaluateFee        | 该接口用于交易费用评估             |
+| 4    | BIFSubmit          | 提交交易                           |
+| 5    | getTxCacheSize     | 该接口用于获取交易池中交易条数     |
+| 6    | batchEvaluateFee   | 该接口为批量费用评估接口           |
+| 7    | getTxCacheData     | 该接口用于获取交易池中交易数据     |
+| 8    | parseBlob          | blob数据解析                       |
+
+### 1.5.1 gasSend
 
 > 接口说明
 
@@ -1111,22 +1262,23 @@ contract.contractInvoke(contractInvokeOperation)
 
 > 调用方法
 
-```java
+```js
 transaction.gasSend(gasSendOperation)
 ```
 
 > 请求参数
 
-| 参数          | 类型   | 描述                                                         |
-| ------------- | ------ | ------------------------------------------------------------ |
-| senderAddress | string | 必填，交易源账号，即交易的发起方                             |
-| privateKey    | String | 必填，交易源账户私钥                                         |
-| ceilLedgerSeq | Long   | 选填，区块高度限制, 如果大于0，则交易只有在该区块高度之前（包括该高度）才有效 |
-| remarks       | String | 选填，用户自定义给交易的备注                                 |
-| destAddress   | String | 必填，发起方地址                                             |
-| amount        | Long   | 必填，转账金额                                               |
-| gasPrice      | Long   | 选填，打包费用 (单位是PT)，默认100L                          |
-| feeLimit      | Long   | 选填，交易花费的手续费(单位是PT)，默认1000000L               |
+| 参数          | 类型    | 描述                                                         |
+| ------------- | ------- | ------------------------------------------------------------ |
+| senderAddress | string  | 必填，交易源账号，即交易的发起方                             |
+| privateKey    | String  | 必填，交易源账户私钥                                         |
+| ceilLedgerSeq | Long    | 选填，区块高度限制, 如果大于0，则交易只有在该区块高度之前（包括该高度）才有效 |
+| remarks       | String  | 选填，用户自定义给交易的备注                                 |
+| destAddress   | String  | 必填，发起方地址                                             |
+| amount        | Long    | 必填，转账金额                                               |
+| gasPrice      | Long    | 选填，打包费用 (单位是PT)，默认100L                          |
+| feeLimit      | Long    | 选填，交易花费的手续费(单位是PT)，默认1000000L               |
+| domainId      | Integer | 选填，指定域ID，默认主共识域id(0)                            |
 
 > 响应数据
 
@@ -1145,6 +1297,7 @@ transaction.gasSend(gasSendOperation)
 | INVALID_DESTADDRESS_ERROR | 11003  | Invalid destAddress                            |
 | INVALID_GAS_AMOUNT_ERROR  | 11026  | BIFAmount must be between 0 and Long.MAX_VALUE |
 | SYSTEM_ERROR              | 20000  | System error                                   |
+| INVALID_DOMAINID_ERROR    | 12007  | Domainid must be equal to or greater than 0    |
 
 
 > 示例
@@ -1159,149 +1312,14 @@ transaction.gasSend(gasSendOperation)
         amount:'100000000',
         ceilLedgerSeq:'',
         feeLimit: '',
-        gasPrice: ''
+        gasPrice: '',
+        domainId: '20'
     }
     let data = await sdk.transaction.gasSend(gasSendOperation)
     console.log('gasSend() : ',  JSON.stringify(data))
 ```
 
-### 6.5.2 privateContractCreate
-
-> 接口说明
-
-```
-该接口用于私有化交易的合约创建。
-```
-
-> 调用方法
-
-```java
-transaction.privateContractCreate(privateContractCreateOperation)
-```
-
-> 请求参数
-
-| 参数          | 类型     | 描述                                                         |
-| ------------- | -------- | ------------------------------------------------------------ |
-| senderAddress | string   | 必填，交易源账号，即交易的发起方                             |
-| privateKey    | String   | 必填，交易源账户私钥                                         |
-| ceilLedgerSeq | Long     | 选填，区块高度限制, 如果大于0，则交易只有在该区块高度之前（包括该高度）才有效 |
-| remarks       | String   | 选填，用户自定义给交易的备注                                 |
-| type          | Integer  | 选填，合约的语种                                             |
-| payload       | String   | 必填，对应语种的合约代码                                     |
-| from          | String   | 必填，发起方加密机公钥                                       |
-| to            | String[] | 必填，接收方加密机公钥                                       |
-| gasPrice      | Long     | 选填，打包费用 (单位是PT)，默认100L                          |
-| feeLimit      | Long     | 选填，交易花费的手续费(单位是PT)，默认1000000L               |
-
-> 响应数据
-
-| 参数 | 类型   | 描述     |
-| ---- | ------ | -------- |
-| hash | string | 交易hash |
-
-
-> 错误码
-
-| 异常                        | 错误码 | 描述                             |
-| --------------------------- | ------ | -------------------------------- |
-| INVALID_ADDRESS_ERROR       | 11006  | Invalid address                  |
-| REQUEST_NULL_ERROR          | 12001  | Request parameter cannot be null |
-| PRIVATEKEY_NULL_ERROR       | 11057  | PrivateKeys cannot be empty      |
-| INVALID_CONTRACT_TYPE_ERROR | 11047  | Invalid contract type            |
-| PAYLOAD_EMPTY_ERROR         | 11044  | Payload cannot be empty          |
-| SYSTEM_ERROR                | 20000  | System error                     |
-
-
-> 示例
-
-```js
-	// 初始化请求参数
-    let privateContractCreateOperation = {
-        sourceAddress:'did:bid:efYhALrHoHiaVnoZgRgJbCghZZdzkQUh',
-        privateKey:'priSPKfLa4oEQS3ieXGeYyF8Nm9iSkWybkJbnkfyAUQnhaUoCd',
-        type:1,
-        remarks:'gasSend',
-        ceilLedgerSeq:'',
-        payload:'\"use strict\";function queryBanance(address)\r\n{return \" test query private contract sdk_3\";}\r\nfunction sendTx(to,amount)\r\n{return Chain.payCoin(to,amount);}\r\nfunction init(input)\r\n{return;}\r\nfunction main(input)\r\n{let args=JSON.parse(input);if(args.method===\"sendTx\"){return sendTx(args.params.address,args.params.amount);}}\r\nfunction query(input)\r\n{let args=JSON.parse(input);if(args.method===\"queryBanance\"){return queryBanance(args.params.address);}}',
-        from:'bDRE8iIfGdwDeQOcJqZabZQH5Nd6cfTOMOorudtgXjQ=',
-        to:['bwPdcwfUEtSZnaDmi2Nvj9HTwOcRvCRDh0cRdvX9BFw='],
-        feeLimit: '',
-        gasPrice: ''
-    }
-    let data = await sdk.transaction.privateContractCreate(privateContractCreateOperation)
-    console.log('privateContractCreate() : ',  JSON.stringify(data))
-```
-
-### 6.5.3 privateContractCall
-
-> 接口说明
-
-   	该接口用于私有化交易的合约调用。
-
-> 调用方法
-
-```java
-transaction.privateContractCall(privateContractCreateOperation)
-```
-
-> 请求参数
-
-| 参数          | 类型     | 描述                                                         |
-| ------------- | -------- | ------------------------------------------------------------ |
-| senderAddress | string   | 必填，交易源账号，即交易的发起方                             |
-| privateKey    | String   | 必填，交易源账户私钥                                         |
-| ceilLedgerSeq | Long     | 选填，区块高度限制, 如果大于0，则交易只有在该区块高度之前（包括该高度）才有效 |
-| remarks       | String   | 选填，用户自定义给交易的备注                                 |
-| destAddress   | String   | 必填，发起方地址                                             |
-| type          | Integer  | 选填，合约的语种（待用）                                     |
-| input         | String   | 必填，待触发的合约的main()入参                               |
-| from          | String   | 必填，发起方加密机公钥                                       |
-| to            | String[] | 必填，接收方加密机公钥                                       |
-| gasPrice      | Long     | 选填，打包费用 (单位是PT)，默认100L                          |
-| feeLimit      | Long     | 选填，交易花费的手续费(单位是PT)，默认1000000L               |
-
-> 响应数据
-
-| 参数 | 类型   | 描述     |
-| ---- | ------ | -------- |
-| hash | string | 交易hash |
-
-
-> 错误码
-
-| 异常                        | 错误码 | 描述                             |
-| --------------------------- | ------ | -------------------------------- |
-| INVALID_ADDRESS_ERROR       | 11006  | Invalid address                  |
-| REQUEST_NULL_ERROR          | 12001  | Request parameter cannot be null |
-| PRIVATEKEY_NULL_ERROR       | 11057  | PrivateKeys cannot be empty      |
-| INVALID_CONTRACT_TYPE_ERROR | 11047  | Invalid contract type            |
-| SYSTEM_ERROR                | 20000  | System error                     |
-
-
-> 示例
-
-```js
-    // 初始化请求参数
-    let privateContractCreateOperation = {
-        sourceAddress:'did:bid:efYhALrHoHiaVnoZgRgJbCghZZdzkQUh',
-        privateKey:'priSPKfLa4oEQS3ieXGeYyF8Nm9iSkWybkJbnkfyAUQnhaUoCd',
-        destAddress:'did:bid:efGSDpr4Fo4TEnHx1kBBSgSAfTt85kY6',
-        type:1,
-        remarks:'private Contract Call',
-        ceilLedgerSeq:'',
-        input:'{\"method\":\"queryBanance\",\"params\":{\"address\":\"567890哈哈=======\"}}',
-        from:'bDRE8iIfGdwDeQOcJqZabZQH5Nd6cfTOMOorudtgXjQ=',
-        to:['bwPdcwfUEtSZnaDmi2Nvj9HTwOcRvCRDh0cRdvX9BFw='],
-        feeLimit: '',
-        gasPrice: ''
-    }
-    let data = await sdk.transaction.privateContractCall(privateContractCreateOperation)
-    const  hash='0390905e5970f1bf262b37fc11d7b2b4b5e28d9a33006584c4940c60fd283518'
-    console.log('privateContractCall() : ',  JSON.stringify(data))
-```
-
-### 6.5.4 getTransactionInfo
+### 1.5.2 getTransactionInfo
 
 > 接口说明
 
@@ -1310,14 +1328,15 @@ transaction.privateContractCall(privateContractCreateOperation)
 > 调用方法
 
 ```js
-transaction.getTransactionInfo(hash)
+transaction.getTransactionInfo(param)
 ```
 
 > 请求参数
 
-| 参数 | 类型   | 描述     |
-| ---- | ------ | -------- |
-| hash | String | 交易hash |
+| 参数     | 类型    | 描述                              |
+| -------- | ------- | --------------------------------- |
+| hash     | String  | 交易hash                          |
+| domainId | Integer | 选填，指定域ID，默认主共识域id(0) |
 
 > 响应数据
 
@@ -1339,23 +1358,27 @@ transaction.getTransactionInfo(hash)
 
 > 错误码
 
-| 异常                 | 错误码 | 描述                             |
-| -------------------- | ------ | -------------------------------- |
-| INVALID_HASH_ERROR   | 11055  | Invalid transaction hash         |
-| REQUEST_NULL_ERROR   | 12001  | Request parameter cannot be null |
-| CONNECTNETWORK_ERROR | 11007  | Failed to connect to the network |
-| SYSTEM_ERROR         | 20000  | System error                     |
+| 异常                   | 错误码 | 描述                                        |
+| ---------------------- | ------ | ------------------------------------------- |
+| INVALID_HASH_ERROR     | 11055  | Invalid transaction hash                    |
+| REQUEST_NULL_ERROR     | 12001  | Request parameter cannot be null            |
+| CONNECTNETWORK_ERROR   | 11007  | Failed to connect to the network            |
+| SYSTEM_ERROR           | 20000  | System error                                |
+| INVALID_DOMAINID_ERROR | 12007  | Domainid must be equal to or greater than 0 |
 
 > 示例
 
-```java
+```js
     // 初始化请求参数
-    const hash='0390905e5970f1bf262b37fc11d7b2b4b5e28d9a33006584c4940c60fd283518'
-    let data = await sdk.transaction.getTransactionInfo(hash)
+    let param = {
+        hash: '0390905e5970f1bf262b37fc11d7b2b4b5e28d9a33006584c4940c60fd283518',
+        domainId: '20'
+    }
+    let data = await sdk.transaction.getTransactionInfo(param)
     console.log('getTransactionInfo() : ',  JSON.stringify(data))
 ```
 
-### 6.5.5 evaluateFee
+### 1.5.3 evaluateFee
 
 > 接口说明
 
@@ -1369,28 +1392,25 @@ transaction.evaluateFee(info)
 
 > 请求参数
 
-| 参数          | 类型                    | 描述                             |
-| ------------- | ----------------------- | -------------------------------- |
-| senderAddress | string                  | 必填，交易源账号，即交易的发起方 |
-| privateKey    | String                  | 必填，交易源账户私钥             |
-| operations    | [Operation](#Operation) | 必填，待提交的操作，不能为空     |
-| gasPrice      | Long                    | 必填，打包费用 (单位是PT)        |
-| feeLimit      | Long                    | 选填，交易花费的手续费(单位是PT) |
+| 参数          | 类型                    | 描述                              |
+| ------------- | ----------------------- | --------------------------------- |
+| senderAddress | string                  | 必填，交易源账号，即交易的发起方  |
+| privateKey    | String                  | 必填，交易源账户私钥              |
+| operations    | [Operation](#Operation) | 必填，待提交的操作，不能为空      |
+| gasPrice      | Long                    | 必填，打包费用 (单位是PT)         |
+| feeLimit      | Long                    | 选填，交易花费的手续费(单位是PT)  |
+| domainId      | Integer                 | 选填，指定域ID，默认主共识域id(0) |
 
 #### Operation
 
-| 序号 | 操作                           | 描述                         |
-| ---- | ------------------------------ | ---------------------------- |
-| 1    | accountCreateOperation         | 生成主链数字身份             |
-| 2    | accountSetMetadataOperation    | 修改账户的metadatas信息      |
-| 3    | accountSetPrivilegeOperation   | 设置权限                     |
-| 4    | contractCreateOperation        | 创建合约（暂不支持EVM 合约） |
-| 5    | contractInvokeOperation        | 合约调用（暂不支持EVM 合约） |
-| 6    | gasSendOperation               | 发起交易                     |
-| 7    | privateContractCreateOperation | 私有化交易的合约创建         |
-| 8    | privateContractCallOperation   | 私有化交易的合约调用         |
-
-
+| 序号 | 操作                         | 描述                         |
+| ---- | ---------------------------- | ---------------------------- |
+| 1    | accountCreateOperation       | 生成主链数字身份             |
+| 2    | accountSetMetadataOperation  | 修改账户的metadatas信息      |
+| 3    | accountSetPrivilegeOperation | 设置权限                     |
+| 4    | contractCreateOperation      | 创建合约（暂不支持EVM 合约） |
+| 5    | contractInvokeOperation      | 合约调用（暂不支持EVM 合约） |
+| 6    | gasSendOperation             | 发起交易                     |
 
 > 响应数据
 
@@ -1398,6 +1418,20 @@ transaction.evaluateFee(info)
 | -------- | ---- | ------------------ |
 | feeLimit | Long | 交易要求的最低费用 |
 | gasPrice | Long | 交易燃料单价       |
+
+> 错误码
+
+| 异常                          | 错误码 | 描述                                                    |
+| ----------------------------- | ------ | ------------------------------------------------------- |
+| INVALID_SOURCEADDRESS_ERROR   | 11002  | Invalid sourceAddress                                   |
+| OPERATIONS_EMPTY_ERROR        | 11051  | Operations cannot be empty                              |
+| OPERATIONS_ONE_ERROR          | 11053  | One of the operations cannot be resolved                |
+| INVALID_SIGNATURENUMBER_ERROR | 11054  | SignagureNumber must be between 1 and Integer.MAX_VALUE |
+| REQUEST_NULL_ERROR            | 12001  | Request parameter cannot be null                        |
+| SYSTEM_ERROR                  | 20000  | System error                                            |
+| INVALID_DOMAINID_ERROR        | 12007  | Domainid must be equal to or greater than 0             |
+
+
 
 > 示例
 
@@ -1415,7 +1449,8 @@ transaction.evaluateFee(info)
         privateKey: 'priSPKUudyVAi5WrhHJU1vCJZYyBL5DNd36MPhbYgHuDPz5E7r',
         operations: privateContractCallOperation,
         feeLimit: '',
-        gasPrice: ''
+        gasPrice: '',
+        domainId: '20'
     }
     let data = await sdk.transaction.evaluateFee(request)
     console.log('evaluateFee() : ',  JSON.stringify(data))
@@ -1424,7 +1459,7 @@ transaction.evaluateFee(info)
 
 
 
-### 6.5.6 BIFSubmit
+### 1.5.4 BIFSubmit
 
 > 接口说明
 
@@ -1464,7 +1499,7 @@ transaction.submitTrans(serialization,signData)
 > 示例
 
 ```js
-     // 初始化参数
+   // 初始化参数
     let serialization = 'sss'
     let privateKey = 'priSPKqYp19ghxeCykHUrepLRkCRD3a2a9y5MJGF8Kc4qfn2aK'
     // sign serialization
@@ -1480,9 +1515,229 @@ transaction.submitTrans(serialization,signData)
 
 ```
 
+### 1.5.5 getTxCacheSize
+
+> 接口说明
+
+   	该接口用于获取交易池中交易条数。
+
+> 调用方法
+
+```js
+transaction.getTxCacheSize(domainId)
+```
+
+ > 请求参数
+
+| 参数     | 类型    | 描述                              |
+| -------- | ------- | --------------------------------- |
+| domainId | Integer | 选填，指定域ID，默认主共识域id(0) |
+
+ > 响应数据
+
+| 参数       | 类型 | 描述                 |
+| ---------- | ---- | -------------------- |
+| queue_size | Long | 返回交易池中交易条数 |
+
+> 错误码
+
+| 异常                 | 错误码 | 描述                             |
+| -------------------- | ------ | -------------------------------- |
+| CONNECTNETWORK_ERROR | 11007  | Failed to connect to the network |
+| SYSTEM_ERROR         | 20000  | System error                     |
+
+> 示例
+
+```js
+    it('test getTxCacheSize', async () => {
+        let domainId='20'
+        let data = await sdk.transaction.getTxCacheSize(domainId)
+        console.log('getTxCacheSize() : ', JSON.stringify(data))
+    })
+```
+
+### 1.5.6 batchEvaluateFee
+
+> 接口说明
+
+   	该接口为批量费用评估接口。
+
+> 调用方法
+
+```js
+transaction.batchEvaluateFee(request)
+```
+
+> 请求参数
+
+| 参数          | 类型                    | 描述                              |
+| ------------- | ----------------------- | --------------------------------- |
+| senderAddress | string                  | 必填，交易源账号，即交易的发起方  |
+| privateKey    | String                  | 必填，交易源账户私钥              |
+| operations    | [Operation](#Operation) | 必填，待提交的操作，不能为空      |
+| gasPrice      | Long                    | 必填，打包费用 (单位是PT)         |
+| feeLimit      | Long                    | 选填，交易花费的手续费(单位是PT)  |
+| domainId      | Integer                 | 选填，指定域ID，默认主共识域id(0) |
+
+#### Operation
+
+| 序号 | 操作                    | 描述                         |
+| ---- | ----------------------- | ---------------------------- |
+| 1    | contractInvokeOperation | 合约调用（暂不支持EVM 合约） |
+
+> 响应数据
+
+| 参数     | 类型 | 描述               |
+| -------- | ---- | ------------------ |
+| feeLimit | Long | 交易要求的最低费用 |
+| gasPrice | Long | 交易燃料单价       |
+
+> 错误码
+
+| 异常                          | 错误码 | 描述                                                    |
+| ----------------------------- | ------ | ------------------------------------------------------- |
+| INVALID_SOURCEADDRESS_ERROR   | 11002  | Invalid sourceAddress                                   |
+| OPERATIONS_EMPTY_ERROR        | 11051  | Operations cannot be empty                              |
+| OPERATIONS_ONE_ERROR          | 11053  | One of the operations cannot be resolved                |
+| INVALID_SIGNATURENUMBER_ERROR | 11054  | SignagureNumber must be between 1 and Integer.MAX_VALUE |
+| REQUEST_NULL_ERROR            | 12001  | Request parameter cannot be null                        |
+| SYSTEM_ERROR                  | 20000  | System error                                            |
+| INVALID_DOMAINID_ERROR        | 12007  | Domainid must be equal to or greater than 0             |
 
 
-## 6.6 区块服务接口列表 
+
+> 示例
+
+```js
+     let amount = '0'
+    const destAddress1 = sdk.keypair.getBidAndKeyPairBySM2().encAddress
+    const destAddress2 = sdk.keypair.getBidAndKeyPairBySM2().encAddress
+    let input1 = '{"method":"creation","params":{"document":{"@context": ["https://w3.org/ns/did/v1"],"context": "https://w3id.org/did/v1","id": "' + destAddress1 + '", "version": "1"}}}'
+    let input2 = '{"method":"creation","params":{"document":{"@context": ["https://w3.org/ns/did/v1"],"context": "https://w3id.org/did/v1","id": "' + destAddress2 + '", "version": "1"}}}'
+
+    let operations = []
+    let contractInvokeOperation1 = {
+        contractAddress: destAddress1,
+        amount: amount,
+        input: input1
+    }
+    let contractInvokeOperation2 = {
+        contractAddress: destAddress2,
+        amount: amount,
+        input: input2
+    }
+    operations.push(contractInvokeOperation1)
+    operations.push(contractInvokeOperation2)
+
+    let request = {
+        sourceAddress: 'did:bid:efnVUgqQFfYeu97ABf6sGm3WFtVXHZB2',
+        privateKey: 'priSPKkWVk418PKAS66q4bsiE2c4dKuSSafZvNWyGGp2sJVtXL',
+        operations: operations,
+        feeLimit: '20',
+        gasPrice: '1',
+        domainId: '0'
+    }
+    let data = await sdk.transaction.batchEvaluateFee(request)
+    console.log('batchEvaluateFee() : ', JSON.stringify(data))
+```
+
+### 1.5.7 getTxCacheData
+
+> 接口说明
+
+   	该接口用于获取交易池中交易数据。
+
+> 调用方法
+
+```js
+transaction.getTxCacheData(request)
+```
+
+> 请求参数
+
+| 参数     | 类型    | 描述                              |
+| -------- | ------- | --------------------------------- |
+| hash     | String  | 选填，交易hash                    |
+| domainId | Integer | 选填，指定域ID，默认主共识域id(0) |
+
+> 响应数据
+
+| 参数                           | 类型     | 描述                 |
+| ------------------------------ | -------- | -------------------- |
+| transactions                   | Object[] | 返回交易池中交易数据 |
+| transactionsp[i].hash          | String   | 交易hash             |
+| transactionsp[i].incoming_time | String   | 进入时间             |
+| transactionsp[i].status        | String   | 状态                 |
+| transactionsp[i].transaction   | Object   |                      |
+
+> 错误码
+
+| 异常                   | 错误码 | 描述                                        |
+| ---------------------- | ------ | ------------------------------------------- |
+| CONNECTNETWORK_ERROR   | 11007  | Failed to connect to the network            |
+| SYSTEM_ERROR           | 20000  | System error                                |
+| INVALID_DOMAINID_ERROR | 12007  | Domainid must be equal to or greater than 0 |
+
+> 示例
+
+```js
+    let request = {
+        domainId: '0',
+        hash: ''
+    }
+    let data = await sdk.transaction.getTxCacheData(request)
+    console.log('getTxCacheData() : ', JSON.stringify(data))
+```
+
+### 1.5.8 parseBlob
+
+> 接口说明
+
+   	该接口用于blob数据解析。
+
+> 调用方法
+
+```js
+transaction.parseBlob(transactionBlob)
+```
+
+> 请求参数
+
+| 参数 | 类型   | 描述       |
+| ---- | ------ | ---------- |
+| blob | String | 必填，BLOB |
+
+> 响应数据
+
+| 参数          | 类型     | 描述                       |
+| ------------- | -------- | -------------------------- |
+| sourceAddress | String   | 交易源账号，即交易的发起方 |
+| nonce         | String   | 账户交易序列号，必须大于0  |
+| fee_limit     | String   | 交易要求的最低费用         |
+| gas_price     | String   | 交易燃料单价               |
+| domain_id     | String   | blob解析出的域ID值         |
+| remarks       | String   | 用户自定义给交易的备注     |
+| operations    | Object[] | 操作对象数组               |
+
+> 错误码
+
+| 异常                        | 错误码 | 描述                             |
+| --------------------------- | ------ | -------------------------------- |
+| INVALID_SERIALIZATION_ERROR | 11056  | Invalid serialization            |
+| CONNECTNETWORK_ERROR        | 11007  | Failed to connect to the network |
+| SYSTEM_ERROR                | 20000  | System error                     |
+
+> 示例
+
+```js
+ let transactionBlob = '0A276469643A6269643A324E4A4C46343931536431553434323270476B50715467686946664B3337751003225C080712276469643A6269643A324E4A4C46343931536431553434323270476B50715467686946664B333775522F0A276469643A6269643A32695277744E53666841753739754A73624C6B78694333374A554C437235791080A9E0870430C0843D38E807'
+    let data = await sdk.transaction.parseBlob(transactionBlob)
+    console.log('parseBlob() : ', JSON.stringify(data))
+```
+
+
+
+## 1.6 区块服务接口列表 
 
 ​		区块服务接口主要是区块相关的接口，目前有6个接口：
 
@@ -1495,7 +1750,7 @@ transaction.submitTrans(serialization,signData)
 | 5    | getValidators       | 该接口用于获取指定区块中所有验证节点数  |
 | 6    | getLatestValidators | 该接口用于获取最新区块中所有验证节点数  |
 
-### 6.6.1 getBlockNumber
+### 1.6.1 getBlockNumber
 
 > 接口说明
 
@@ -1504,8 +1759,14 @@ transaction.submitTrans(serialization,signData)
 > 调用方法
 
 ```js
-block.getBlockNumber()
+block.getBlockNumber(param)
 ```
+
+> 请求参数
+
+| 参数     | 类型    | 描述                              |
+| -------- | ------- | --------------------------------- |
+| domainId | Integer | 选填，指定域ID，默认主共识域id(0) |
 
 > 响应数据
 
@@ -1516,20 +1777,24 @@ block.getBlockNumber()
 
 > 错误码
 
-| 异常                 | 错误码 | 描述                             |
-| -------------------- | ------ | -------------------------------- |
-| CONNECTNETWORK_ERROR | 11007  | Failed to connect to the network |
-| SYSTEM_ERROR         | 20000  | System error                     |
+| 异常                   | 错误码 | 描述                                        |
+| ---------------------- | ------ | ------------------------------------------- |
+| CONNECTNETWORK_ERROR   | 11007  | Failed to connect to the network            |
+| SYSTEM_ERROR           | 20000  | System error                                |
+| INVALID_DOMAINID_ERROR | 12007  | Domainid must be equal to or greater than 0 |
 
 > 示例
 
 ```js
     // 初始化请求参数
-	let data = await sdk.block.getBlockNumber()
+    let param = {
+        domainId: '20'
+    }
+	let data = await sdk.block.getBlockNumber(param)
     console.log('getBlockNumber() : ',  JSON.stringify(data))
 ```
 
-### 6.6.2 getTransactions
+### 1.6.2 getTransactions
 
 > 接口说明
 
@@ -1537,15 +1802,16 @@ block.getBlockNumber()
 
 > 调用方法
 
-```java
-block.getTransactions(blockNumber)
+```js
+block.getTransactions(param)
 ```
 
 > 请求参数
 
-| 参数        | 类型 | 描述                                  |
-| ----------- | ---- | ------------------------------------- |
-| blockNumber | Long | 必填，最新的区块高度，对应底层字段seq |
+| 参数        | 类型    | 描述                                  |
+| ----------- | ------- | ------------------------------------- |
+| blockNumber | Long    | 必填，最新的区块高度，对应底层字段seq |
+| domainId    | Integer | 选填，指定域ID，默认主共识域id(0)     |
 
 > 响应数据
 
@@ -1556,23 +1822,27 @@ block.getTransactions(blockNumber)
 
 > 错误码
 
-| 异常                      | 错误码 | 描述                             |
-| ------------------------- | ------ | -------------------------------- |
-| INVALID_BLOCKNUMBER_ERROR | 11060  | BlockNumber must bigger than 0   |
-| REQUEST_NULL_ERROR        | 12001  | Request parameter cannot be null |
-| CONNECTNETWORK_ERROR      | 11007  | Failed to connect to the network |
-| SYSTEM_ERROR              | 20000  | System error                     |
+| 异常                      | 错误码 | 描述                                        |
+| ------------------------- | ------ | ------------------------------------------- |
+| INVALID_BLOCKNUMBER_ERROR | 11060  | BlockNumber must bigger than 0              |
+| REQUEST_NULL_ERROR        | 12001  | Request parameter cannot be null            |
+| CONNECTNETWORK_ERROR      | 11007  | Failed to connect to the network            |
+| SYSTEM_ERROR              | 20000  | System error                                |
+| INVALID_DOMAINID_ERROR    | 12007  | Domainid must be equal to or greater than 0 |
 
 > 示例
 
 ```js
     // 初始化请求参数
-    let blockNumber = '1'
-    let data = await sdk.block.getTransactions(blockNumber)
+    let param = {
+        blockNumber: '1',
+        domainId: '20'
+    }
+    let data = await sdk.block.getTransactions(param)
     console.log('getTransactions() : ',  JSON.stringify(data))
 ```
 
-### 6.6.3 getBlockInfo
+### 1.6.3 getBlockInfo
 
 > 接口说明
 
@@ -1581,14 +1851,15 @@ block.getTransactions(blockNumber)
 > 调用方法
 
 ```js
-block.getBlockInfo(blockNumber)
+block.getBlockInfo(param)
 ```
 
 > 请求参数
 
-| 参数        | 类型 | 描述                   |
-| ----------- | ---- | ---------------------- |
-| blockNumber | Long | 必填，待查询的区块高度 |
+| 参数        | 类型    | 描述                              |
+| ----------- | ------- | --------------------------------- |
+| blockNumber | Long    | 必填，待查询的区块高度            |
+| domainId    | Integer | 选填，指定域ID，默认主共识域id(0) |
 
 > 响应数据
 
@@ -1599,26 +1870,31 @@ block.getBlockInfo(blockNumber)
 | header.number      | Long           | 区块高度     |
 | header.txCount     | Long           | 交易总量     |
 | header.version     | String         | 区块版本     |
+| header.hash        | String         | 区块HASH     |
 
 > 错误码
 
-| 异常                      | 错误码 | 描述                             |
-| ------------------------- | ------ | -------------------------------- |
-| INVALID_BLOCKNUMBER_ERROR | 11060  | BlockNumber must bigger than 0   |
-| REQUEST_NULL_ERROR        | 12001  | Request parameter cannot be null |
-| CONNECTNETWORK_ERROR      | 11007  | Failed to connect to the network |
-| SYSTEM_ERROR              | 20000  | System error                     |
+| 异常                      | 错误码 | 描述                                        |
+| ------------------------- | ------ | ------------------------------------------- |
+| INVALID_BLOCKNUMBER_ERROR | 11060  | BlockNumber must bigger than 0              |
+| REQUEST_NULL_ERROR        | 12001  | Request parameter cannot be null            |
+| CONNECTNETWORK_ERROR      | 11007  | Failed to connect to the network            |
+| SYSTEM_ERROR              | 20000  | System error                                |
+| INVALID_DOMAINID_ERROR    | 12007  | Domainid must be equal to or greater than 0 |
 
 > 示例
 
 ```js
     // 初始化请求参数
-    let blockNumber = '61360'
-    let data = await sdk.block.getBlockInfo(blockNumber)
+    let param = {
+        blockNumber: '61360',
+        domainId: '20'
+    }
+    let data = await sdk.block.getBlockInfo(param)
     console.log('getBlockInfo() : ',  JSON.stringify(data))
 ```
 
-### 6.6.4 getBlockLatestInfo
+### 1.6.4 getBlockLatestInfo
 
 > 接口说明
 
@@ -1629,8 +1905,14 @@ block.getBlockInfo(blockNumber)
 > 调用方法
 
 ```js
-block.getBlockLatestInfo()
+block.getBlockLatestInfo(param)
 ```
+
+> 请求参数
+
+| 参数     | 类型    | 描述                              |
+| -------- | ------- | --------------------------------- |
+| domainId | Integer | 选填，指定域ID，默认主共识域id(0) |
 
 > 响应数据
 
@@ -1641,24 +1923,29 @@ block.getBlockLatestInfo()
 | header.number      | Long           | 区块高度，对应底层字段seq |
 | header.txCount     | Long           | 交易总量                  |
 | header.version     | String         | 区块版本                  |
+| header.hash        | String         | 区块HASH                  |
 
 
 > 错误码
 
-| 异常                 | 错误码 | 描述                             |
-| -------------------- | ------ | -------------------------------- |
-| CONNECTNETWORK_ERROR | 11007  | Failed to connect to the network |
-| SYSTEM_ERROR         | 20000  | System error                     |
+| 异常                   | 错误码 | 描述                                        |
+| ---------------------- | ------ | ------------------------------------------- |
+| CONNECTNETWORK_ERROR   | 11007  | Failed to connect to the network            |
+| SYSTEM_ERROR           | 20000  | System error                                |
+| INVALID_DOMAINID_ERROR | 12007  | Domainid must be equal to or greater than 0 |
 
 > 示例
 
 ```js
     // 初始化请求参数
-    let data = await sdk.block.getBlockLatestInfo()
+    let param = {
+        domainId: '20'
+    }
+    let data = await sdk.block.getBlockLatestInfo(param)
     console.log('getBlockLatestInfo() : ',  JSON.stringify(data))
 ```
 
-### 6.6.5 getValidators
+### 1.6.5 getValidators
 
 > 接口说明
 
@@ -1667,14 +1954,15 @@ block.getBlockLatestInfo()
 > 调用方法
 
 ```js
-block.getValidators(blockNumber)
+block.getValidators(param)
 ```
 
 > 请求参数
 
-| 参数        | 类型 | 描述                              |
-| ----------- | ---- | --------------------------------- |
-| blockNumber | Long | 必填，待查询的区块高度，必须大于0 |
+| 参数        | 类型    | 描述                              |
+| ----------- | ------- | --------------------------------- |
+| blockNumber | Long    | 必填，待查询的区块高度，必须大于0 |
+| domainId    | Integer | 选填，指定域ID，默认主共识域id(0) |
 
 > 响应数据
 
@@ -1685,23 +1973,27 @@ block.getValidators(blockNumber)
 
 > 错误码
 
-| 异常                      | 错误码 | 描述                             |
-| ------------------------- | ------ | -------------------------------- |
-| INVALID_BLOCKNUMBER_ERROR | 11060  | BlockNumber must bigger than 0   |
-| REQUEST_NULL_ERROR        | 12001  | Request parameter cannot be null |
-| CONNECTNETWORK_ERROR      | 11007  | Failed to connect to the network |
-| SYSTEM_ERROR              | 20000  | System error                     |
+| 异常                      | 错误码 | 描述                                        |
+| ------------------------- | ------ | ------------------------------------------- |
+| INVALID_BLOCKNUMBER_ERROR | 11060  | BlockNumber must bigger than 0              |
+| REQUEST_NULL_ERROR        | 12001  | Request parameter cannot be null            |
+| CONNECTNETWORK_ERROR      | 11007  | Failed to connect to the network            |
+| SYSTEM_ERROR              | 20000  | System error                                |
+| INVALID_DOMAINID_ERROR    | 12007  | Domainid must be equal to or greater than 0 |
 
 > 示例
 
 ```js
     // 初始化请求参数
-    let blockNumber = '1'
-    let data = await sdk.block.getValidators(blockNumber)
+    let param = {
+        blockNumber: '1',
+        domainId: '20'
+    }
+    let data = await sdk.block.getValidators(param)
     console.log('getValidators() : ',  JSON.stringify(data))
 ```
 
-### 6.6.6 getLatestValidators
+### 1.6.6 getLatestValidators
 
 > 接口说明
 
@@ -1710,8 +2002,14 @@ block.getValidators(blockNumber)
 > 调用方法
 
 ```js
-block.getLatestValidators()
+block.getLatestValidators(param)
 ```
+
+> 请求参数
+
+| 参数     | 类型    | 描述                              |
+| -------- | ------- | --------------------------------- |
+| domainId | Integer | 选填，指定域ID，默认主共识域id(0) |
 
 > 响应数据
 
@@ -1722,20 +2020,24 @@ block.getLatestValidators()
 
 > 错误码
 
-| 异常                 | 错误码 | 描述                             |
-| -------------------- | ------ | -------------------------------- |
-| CONNECTNETWORK_ERROR | 11007  | Failed to connect to the network |
-| SYSTEM_ERROR         | 20000  | System error                     |
+| 异常                   | 错误码 | 描述                                        |
+| ---------------------- | ------ | ------------------------------------------- |
+| CONNECTNETWORK_ERROR   | 11007  | Failed to connect to the network            |
+| SYSTEM_ERROR           | 20000  | System error                                |
+| INVALID_DOMAINID_ERROR | 12007  | Domainid must be equal to or greater than 0 |
 
 > 示例
 
 ```js
     // 初始化请求参数
-    let data = await sdk.block.getLatestValidators()
+    let param = {
+        domainId: '20'
+    }
+    let data = await sdk.block.getLatestValidators(param)
     console.log('getLatestValidators() : ',  JSON.stringify(data))
 ```
 
-## 6.7 错误码
+## 1.7 错误码
 
 | 异常                                      | 错误码 | 描述                                                         |
 | ----------------------------------------- | ------ | ------------------------------------------------------------ |
@@ -1800,3 +2102,4 @@ block.getLatestValidators()
 | INVALID_NUMBER_OF_ARG                     | 12008  | Invalid number of arguments to the function                  |
 | QUERY_RESULT_NOT_EXIST                    | 12009  | Query result not exist                                       |
 | INVALID_ARGUMENTS                         | 12010  | Invalid arguments to the function                            |
+| INVALID_DOMAINID_ERROR                    | 12007  | Domainid must be equal to or greater than 0                  |

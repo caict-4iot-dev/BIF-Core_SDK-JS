@@ -6,58 +6,26 @@ const sdk = new BIFCoreSDK({
 
 it('test gasSend', async () => {
     let gasSendOperation = {
-        sourceAddress: 'did:bid:ef4NWJx2enwNzpnh3w5SJcj9Qhoddaa5',
-        privateKey: 'priSPKkLzxxmGehL534YiXsov9xF8ssioBWuM3xiubDqTERZiE',
+        sourceAddress: 'did:bid:efnVUgqQFfYeu97ABf6sGm3WFtVXHZB2',
+        privateKey: 'priSPKkWVk418PKAS66q4bsiE2c4dKuSSafZvNWyGGp2sJVtXL',
         destAddress: 'did:bid:efYhALrHoHiaVnoZgRgJbCghZZdzkQUh',
         remarks: 'gasSend',
         amount: '100000000',
         ceilLedgerSeq: '',
         feeLimit: '',
-        gasPrice: ''
+        gasPrice: '',
+        domainId: '0'
     }
     let data = await sdk.transaction.gasSend(gasSendOperation)
     console.log('gasSend() : ', JSON.stringify(data))
 })
-it('test privateContractCreate', async () => {
-    let privateContractCreateOperation = {
-        sourceAddress: 'did:bid:ef4NWJx2enwNzpnh3w5SJcj9Qhoddaa5',
-        privateKey: 'priSPKkLzxxmGehL534YiXsov9xF8ssioBWuM3xiubDqTERZiE',
-        type: 1,
-        remarks: 'gasSend',
-        ceilLedgerSeq: '',
-        payload: '\"use strict\";function queryBanance(address)\r\n{return \" test query private contract sdk_3\";}\r\nfunction sendTx(to,amount)\r\n{return Chain.payCoin(to,amount);}\r\nfunction init(input)\r\n{return;}\r\nfunction main(input)\r\n{let args=JSON.parse(input);if(args.method===\"sendTx\"){return sendTx(args.params.address,args.params.amount);}}\r\nfunction query(input)\r\n{let args=JSON.parse(input);if(args.method===\"queryBanance\"){return queryBanance(args.params.address);}}',
-        from: 'sX46dMvKzKgH/SByjBs0uCROD9paCc/tF6WwcgUx3nA=',
-        to: ['Pz8tQqi4DZcL5Vrh/GXS20vZ4oqaiNyFxG0B9xAJmhw='],
-        feeLimit: '',
-        gasPrice: ''
-    }
-    let data = await sdk.transaction.privateContractCreate(privateContractCreateOperation)
-    // var hash = '08ddd2deccfc316b961ce8a667a758844291ed7c43ae6be3ce14b9e0bb22b7db'
-    console.log('privateContractCreate() : ', JSON.stringify(data))
-})
-
-it('test privateContractCall', async () => {
-    let privateContractCreateOperation = {
-        sourceAddress: 'did:bid:ef4NWJx2enwNzpnh3w5SJcj9Qhoddaa5',
-        privateKey: 'priSPKkLzxxmGehL534YiXsov9xF8ssioBWuM3xiubDqTERZiE',
-        destAddress: 'did:bid:ef2sdQ3kxTHrgB6kpvRDDvCG9NeGW1CX',
-        type: 1,
-        remarks: 'private Contract Call',
-        ceilLedgerSeq: '',
-        input: '\"use strict\";function queryBanance(address)\r\n{return \" test query private contract sdk_3\";}\r\nfunction sendTx(to,amount)\r\n{return Chain.payCoin(to,amount);}\r\nfunction init(input)\r\n{return;}\r\nfunction main(input)\r\n{let args=JSON.parse(input);if(args.method===\"sendTx\"){return sendTx(args.params.address,args.params.amount);}}\r\nfunction query(input)\r\n{let args=JSON.parse(input);if(args.method===\"queryBanance\"){return queryBanance(args.params.address);}}',
-        from: 'sX46dMvKzKgH/SByjBs0uCROD9paCc/tF6WwcgUx3nA=',
-        to: ['Pz8tQqi4DZcL5Vrh/GXS20vZ4oqaiNyFxG0B9xAJmhw='],
-        feeLimit: '',
-        gasPrice: ''
-    }
-
-    let data = await sdk.transaction.privateContractCall(privateContractCreateOperation)
-    console.log('privateContractCall() : ', JSON.stringify(data))
-})
 
 it('test getTransactionInfo', async () => {
-    const hash = '21ef07e8a83f9362184d90bd5933e47b4d12a689090c03f4aca0fdca04f95729'
-    let data = await sdk.transaction.getTransactionInfo(hash)
+    let param = {
+        hash: '21ef07e8a83f9362184d90bd5933e47b4d12a689090c03f4aca0fdca04f95729',
+        domainId: '20'
+    }
+    let data = await sdk.transaction.getTransactionInfo(param)
     console.log('getTransactionInfo() : ', JSON.stringify(data))
 })
 
@@ -111,27 +79,13 @@ it('test evaluateFee', async () => {
     let contractInvokeOperation = sdk.operaction.contractInvokeOperation
     contractInvokeOperation.setContractAddress('did:bid:efL7d2Ak1gyUpU4eiM3C9oxvbkhXr4Mu')
 
-    // privateContractCreateOperation
-    let privateContractCreateOperation = sdk.operaction.privateContractCreateOperation
-    privateContractCreateOperation.setType(0)
-    privateContractCreateOperation.setFrom('bDRE8iIfGdwDeQOcJqZabZQH5Nd6cfTOMOorudtgXjQ=')
-    privateContractCreateOperation.setTo(['bwPdcwfUEtSZnaDmi2Nvj9HTwOcRvCRDh0cRdvX9BFw='])
-    privateContractCreateOperation.setPayload('\"use strict\";function queryBanance(address)\r\n{return \" test query private contract sdk_3\";}\r\nfunction sendTx(to,amount)\r\n{return Chain.payCoin(to,amount);}\r\nfunction init(input)\r\n{return;}\r\nfunction main(input)\r\n{let args=JSON.parse(input);if(args.method===\"sendTx\"){return sendTx(args.params.address,args.params.amount);}}\r\nfunction query(input)\r\n{let args=JSON.parse(input);if(args.method===\"queryBanance\"){return queryBanance(args.params.address);}}')
-
-    // privateContractCreateOperation
-    let privateContractCallOperation = sdk.operaction.privateContractCallOperation
-    privateContractCallOperation.setType(0)
-    privateContractCallOperation.setFrom('sX46dMvKzKgH/SByjBs0uCROD9paCc/tF6WwcgUx3nA=')
-    privateContractCallOperation.setTo(['Pz8tQqi4DZcL5Vrh/GXS20vZ4oqaiNyFxG0B9xAJmhw='])
-    privateContractCallOperation.setDestAddress('did:bid:ef2sdQ3kxTHrgB6kpvRDDvCG9NeGW1CX')
-    privateContractCallOperation.setInput('{\"method\":\"queryBanance\",\"params\":{\"address\":\"567890哈哈=======\"}}')
-
     let request = {
-        sourceAddress: 'did:bid:ef4NWJx2enwNzpnh3w5SJcj9Qhoddaa5',
-        privateKey: 'priSPKkLzxxmGehL534YiXsov9xF8ssioBWuM3xiubDqTERZiE',
-        operations: privateContractCallOperation,
+        sourceAddress: 'did:bid:efyJLYwWd7SmKV44QXxRAd7NLCfjKxHB',
+        privateKey: 'priSPKpeenYnvVLaGkCg6Lm5c8vsq85htyF62xyFz54eCkJ2rK',
+        operations: contractInvokeOperation,
         feeLimit: '',
-        gasPrice: ''
+        gasPrice: '',
+        domainId: '20'
     }
     let data = await sdk.transaction.evaluateFee(request)
     console.log('evaluateFee() : ', JSON.stringify(data))
@@ -151,4 +105,12 @@ it('test BIFSubmit', async () => {
         signData
     )
     console.log('BIFSubmit() : ', JSON.stringify(transactionInfo))
+})
+
+/**
+ * 获取交易池中交易条数
+ */
+it('test getTxCacheSize', async () => {
+    let data = await sdk.transaction.getTxCacheSize()
+    console.log('getTxCacheSize() : ', JSON.stringify(data))
 })

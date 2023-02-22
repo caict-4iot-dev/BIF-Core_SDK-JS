@@ -2,13 +2,16 @@
 
 const BIFCoreSDK = require('../index')
 const sdk = new BIFCoreSDK({
-     host: 'http://test.bifcore.bitfactory.cn'
+    host: 'http://test.bifcore.bitfactory.cn'
 })
 /**
  * 查询最新的区块高度
  */
 it('test getBlockNumber', async () => {
-    let data = await sdk.block.getBlockNumber()
+    let param = {
+        domainId: '20'
+    }
+    let data = await sdk.block.getBlockNumber(param)
     console.log('getBlockNumber() : ', JSON.stringify(data))
 })
 
@@ -16,8 +19,11 @@ it('test getBlockNumber', async () => {
  * 查询指定区块高度下的所有交易
  */
 it('test getTransactions', async () => {
-    let blockNumber = '1'
-    let data = await sdk.block.getTransactions(blockNumber)
+    let param = {
+        blockNumber: '1',
+        domainId: '20'
+    }
+    let data = await sdk.block.getTransactions(param)
     console.log('getTransactions() : ', JSON.stringify(data))
 })
 
@@ -25,8 +31,11 @@ it('test getTransactions', async () => {
  * 查询指定区块高度的区块信息
  */
 it('test getBlockInfo', async () => {
-    let blockNumber = '61360'
-    let data = await sdk.block.getBlockInfo(blockNumber)
+    let param = {
+        blockNumber: '61360',
+        domainId: '20'
+    }
+    let data = await sdk.block.getBlockInfo(param)
     console.log('getBlockInfo() : ', JSON.stringify(data))
 })
 
@@ -34,7 +43,10 @@ it('test getBlockInfo', async () => {
  * 查询指定区块高度的区块信息
  */
 it('test getBlockLatestInfo', async () => {
-    let data = await sdk.block.getBlockLatestInfo()
+    let param = {
+        domainId: '20'
+    }
+    let data = await sdk.block.getBlockLatestInfo(param)
     console.log('getBlockLatestInfo() : ', JSON.stringify(data))
 })
 
@@ -42,8 +54,11 @@ it('test getBlockLatestInfo', async () => {
  * 获取指定区块中所有验证节点数
  */
 it('test getValidators', async () => {
-    let blockNumber = '1'
-    let data = await sdk.block.getValidators(blockNumber)
+    let param = {
+        blockNumber: '1',
+        domainId: '20'
+    }
+    let data = await sdk.block.getValidators(param)
     console.log('getValidators() : ', JSON.stringify(data))
 })
 
@@ -51,6 +66,9 @@ it('test getValidators', async () => {
  * 获取最新区块中所有验证节点数
  */
 it('test getLatestValidators', async () => {
-    let data = await sdk.block.getLatestValidators()
+    let param = {
+        domainId: '20'
+    }
+    let data = await sdk.block.getLatestValidators(param)
     console.log('getLatestValidators() : ', JSON.stringify(data))
 })
