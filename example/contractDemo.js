@@ -2,8 +2,7 @@
 
 const BIFCoreSDK = require('../index')
 const sdk = new BIFCoreSDK({
-    // host: 'http://test-bif-core.xinghuo.space'
-    host: 'http://172.17.6.84:10087'
+     host: 'http://test.bifcore.bitfactory.cn'
 })
 /**
  * 检测合约账户的有效性
