@@ -2,6 +2,8 @@
 
 ​		本节详细说明BIFCore-SDK-NodeJs常用接口文档。星火链提供 nodejs版 SDK供开发者使用。
 
+​        **github**代码库地址：https://github.com/caict-4iot-dev/BIF-Core_SDK-JS
+
 ## 1.1 SDK概述
 
 ### 1.1.1 名词解析
@@ -247,7 +249,7 @@ console.log('decipherKeyStore()', JSON.stringify( encPrivateKey))
 
 ```
 
-### 1.2.6 助记词
+### 1.2.6 助记词(v1.0.3)
 
 + **生成助记词**
 
@@ -290,20 +292,22 @@ console.log('decipherKeyStore()', JSON.stringify( encPrivateKey))
 > 示例
 
 ```js
- let random = randombytes(16);
- const mnemonicCodes = sdk.keypair.generateMnemonicCode(random.toString('hex'));
-//ED25519
-//方式一
- const privateKey = await sdk.keypair.privateKeyFromMnemonicCode(mnemonicCodes, "m/44'/526'/1'/0/0");
-    console.log(privateKey);
-//方式二
- const privkeyED25519 = await sdk.keypair.privKeyFromMCodeAndCrypto(sdk.keypair.CRYPTO_ED25519, mnemonicCodes, "m/44'/526'/1'/0/0");
-    console.log(privkeyED25519);
+const mcode2 = 'attitude coyote negative library clerk copy portion bus combine gospel topic typical'
+const mcode1 = 'disorder cluster crunch hood desk west double bind bomb salmon identify rate'
+const hdPath_SM2 = "m/44'/2022'/0'/0/0"
+const hdPath_Ed25519 = "m/44'/2022'/0'/0'/0'"
+// ED25519
+const privkey = sdk.keypair.privKeyFromMCodeAndCrypto(sdk.keypair.CRYPTO_ED25519, mcode2, hdPath_Ed25519)
+// 私钥转对象
+const privateKeyManagerByKey = await sdk.keypair.privateKeyManagerByKey(privkey)
+console.log('privateKeyManagerByKey-Ed25519 ', JSON.stringify(privateKeyManagerByKey))
+// SM2
+const privkeySM2 = sdk.keypair.privKeyFromMCodeAndCrypto(sdk.keypair.CRYPTO_SM2, mcode1, hdPath_SM2)
+const privateKeyManagerByKey2 = await sdk.keypair.privateKeyManagerByKey(privkeySM2)
+console.log('privateKeyManagerByKey-SM2 ', JSON.stringify(privateKeyManagerByKey2))
 
-//SM2
- const privkeySM2 = await sdk.keypair.privKeyFromMCodeAndCrypto(sdk.keypair.CRYPTO_SM2, mnemonicCodes, "m/44'/526'/1'/0/0");
-    console.log(privkeySM2);
-
+const privateKey = await sdk.keypair.privateKeyFromMnemonicCode(mcode2, hdPath_Ed25519)
+console.log(privateKey)
 ```
 
 ## 1.3 账户服务接口列表
@@ -344,9 +348,9 @@ account.createAccount(createAccountOperation)
 | ceilLedgerSeq | Long    | 选填，区块高度限制, 如果大于0，则交易只有在该区块高度之前（包括该高度）才有效 |
 | remarks       | String  | 选填，用户自定义给交易的备注                                 |
 | destAddress   | String  | 必填，目标账户地址                                           |
-| initBalance   | Long    | 必填，初始化星火令，单位uXHT，1 星火令 = 10^8 uXHT, 大小[0, Long.MAX_VALUE] |
-| gasPrice      | Long    | 选填，打包费用 (单位是uXHT)，默认100L                        |
-| feeLimit      | Long    | 选填，交易花费的手续费(单位是uXHT)，默认1000000L             |
+| initBalance   | Long    | 必填，初始化星火令，单位glowstone，1 星火令 = 10^8 星火萤(glowstone), 大小(0, Long.MAX_VALUE] |
+| gasPrice      | Long    | 选填，打包费用 (单位是glowstone)，默认100L                   |
+| feeLimit      | Long    | 选填，交易花费的手续费(单位是glowstone)，默认1000000L        |
 | domainId      | Integer | 选填，指定域ID，默认主共识域id(0)                            |
 
 > 响应数据
@@ -364,7 +368,7 @@ account.createAccount(createAccountOperation)
 | REQUEST_NULL_ERROR        | 12001  | Request parameter cannot be null              |
 | PRIVATEKEY_NULL_ERROR     | 11057  | PrivateKeys cannot be empty                   |
 | INVALID_DESTADDRESS_ERROR | 11003  | Invalid destAddress                           |
-| INVALID_INITBALANCE_ERROR | 11004  | InitBalance must between 0 and Long.MAX_VALUE |
+| INVALID_INITBALANCE_ERROR | 11004  | InitBalance must between 1 and Long.MAX_VALUE |
 | SYSTEM_ERROR              | 20000  | System error                                  |
 | INVALID_DOMAINID_ERROR    | 12007  | Domainid must be equal to or greater than 0   |
 
@@ -373,20 +377,19 @@ account.createAccount(createAccountOperation)
 
 ```js
 // 初始化请求参数
-let createAccountOperation = {
-    sourceAddress: 'did:bid:efsdhXX7bNYxeYYVasatAi7DPE4nM3Lb',
-    privateKey: 'priSPKUk5JSkEK7inJTTs1RFAqvHoVKw6KEhZzsZxuMpGJieU4',
-    remarks: 'create account',
-    destAddress: 'did:bid:efyxNJhavx5d8LDtJUYcxRctKJWEtWMx',
-    initBalance: '100',
-    ceilLedgerSeq: '',
-    feeLimit: '276',
-    gasPrice: '1',
-    domainId: '0'
-
-}
-let data = await sdk.account.createAccount(createAccountOperation)
-console.log('createAccount() : ', JSON.stringify(data))
+ let createAccountOperation = {
+          sourceAddress:'did:bid:efnVUgqQFfYeu97ABf6sGm3WFtVXHZB2',
+          privateKey:'priSPKkWVk418PKAS66q4bsiE2c4dKuSSafZvNWyGGp2sJVtXL',
+          remarks:'create account',
+          destAddress:'did:bid:efQMuPahc3zm7abBUBfj22xZokhZ7rED',
+          initBalance:'100000000000',
+          ceilLedgerSeq:'',
+     	  gasPrice:'',
+     	  feeLimit:'',
+          domainId:'20'
+      }
+ let data = await sdk.account.createAccount(createAccountOperation)
+  console.log('createAccount() : ',  JSON.stringify(data))
 ```
 
 ### 1.3.2 getAccount
@@ -410,12 +413,11 @@ account.getAccountBalance(param)
 
 > 响应数据
 
-| 参数         | 类型    | 描述                                                |
-| ------------ | ------- | --------------------------------------------------- |
-| address      | String  | 账户地址                                            |
-| balance      | Long    | 账户余额，单位uXHT，1 星火令 = 10^8 uXHT, 必须大于0 |
-| nonce        | Long    | 账户交易序列号，必须大于0                           |
-| authTransfer | boolean | 许可状态                                            |
+| 参数    | 类型   | 描述                                                         |
+| ------- | ------ | ------------------------------------------------------------ |
+| address | String | 账户地址                                                     |
+| balance | Long   | 账户余额，单位glowstone，1 星火令 = 10^8 星火萤(glowstone), 必须大于0 |
+| nonce   | Long   | 账户交易序列号，必须大于0                                    |
 
 > 错误码
 
@@ -431,12 +433,12 @@ account.getAccountBalance(param)
 
 ```js
  // 初始化请求参数
-let param = {
-    address: 'did:bid:efyxNJhavx5d8LDtJUYcxRctKJWEtWMx',
-    domainId: '0'
-}
-let data = await sdk.account.getAccount(param)
-console.log('getAccount() : ', JSON.stringify(data))
+    let param = {
+        address: 'did:bid:eft6d191modv1cxBC43wjKHk85VVhQDc',
+        domainId: '20'
+    }
+ 	let data = await sdk.account.getAccountBalance(param)
+    console.log('getAccountBalance() : ',  JSON.stringify(data))
 ```
 
 ### 1.3.3 getNonce
@@ -477,13 +479,13 @@ getNonce(param)
 > 示例
 
 ```js
-// 初始化请求参数
-let param = {
-    address: 'did:bid:efyxNJhavx5d8LDtJUYcxRctKJWEtWMx',
-    domainId: '0'
-}
-let data = await sdk.account.getNonce(param)
-console.log('getNonce() : ', JSON.stringify(data))
+	// 初始化请求参数
+    let param = {
+        address: 'did:bid:eft6d191modv1cxBC43wjKHk85VVhQDc',
+        domainId: '20'
+    }
+	let data = await sdk.account.getNonce(param)
+ 	console.log('getNonce() : ',  JSON.stringify(data))
 ```
 
 ### 1.3.4 getAccountBalance
@@ -524,13 +526,13 @@ account.getAccountBalance(param)
 > 示例
 
 ```js
-// 初始化请求参数
-let param = {
-    address: 'did:bid:efyxNJhavx5d8LDtJUYcxRctKJWEtWMx',
-    domainId: '0'
-}
-let data = await sdk.account.getAccountBalance(param)
-console.log('getAccountBalance() : ', JSON.stringify(data))
+    // 初始化请求参数
+    let param = {
+        address: 'did:bid:eft6d191modv1cxBC43wjKHk85VVhQDc',
+        domainId: '20'
+    }
+    let data = await sdk.account.getAccountBalance(param)
+    console.log('getAccountBalance() : ',  JSON.stringify(data))
 ```
 
 ### 1.3.5 setMetadatas
@@ -557,8 +559,8 @@ account.setMetadatas(setMetadatasOperation)
 | value         | String  | 必填，metadatas的内容，长度限制[0, 256000]                   |
 | version       | Long    | 选填，metadatas的版本                                        |
 | deleteFlag    | Boolean | 选填，是否删除remarks                                        |
-| gasPrice      | Long    | 选填，打包费用 (单位是uXHT)，默认100L                        |
-| feeLimit      | Long    | 选填，交易花费的手续费(单位是uXHT)，默认1000000L             |
+| gasPrice      | Long    | 选填，打包费用 (单位是glowstone)，默认100L                   |
+| feeLimit      | Long    | 选填，交易花费的手续费(单位是glowstone)，默认1000000L        |
 | domainId      | Integer | 选填，指定域ID，默认主共识域id(0)                            |
 
 > 响应数据
@@ -584,20 +586,21 @@ account.setMetadatas(setMetadatasOperation)
 > 示例
 
 ```js
-// 初始化请求参数
-let setMetadatasOperation = {
-    sourceAddress: 'did:bid:efsdhXX7bNYxeYYVasatAi7DPE4nM3Lb',
-    privateKey: 'priSPKUk5JSkEK7inJTTs1RFAqvHoVKw6KEhZzsZxuMpGJieU4',
-    remarks: 'create account',
-    key: '20230203',
-    value: 'metadata-20230203',
-    version: '1',
-    feeLimit: '',
-    gasPrice: '',
-    domainId: '0'
-}
-let data = await sdk.account.setMetadatas(setMetadatasOperation)
-console.log('setMetadatas() : ', JSON.stringify(data))
+    // 初始化请求参数
+	let setMetadatasOperation = {
+      sourceAddress:'did:bid:eft6d191modv1cxBC43wjKHk85VVhQDc',
+      privateKey:'priSPKff1hvKVFYYFKSgfMb17wJ4dYZAHhLREarvh4Cy6fgn5b',
+      remarks:'create account',
+      key:'20211210',
+      value:'metadata-20211210',
+      version:'1',
+      gasPrice:'',
+      feeLimit:'',
+      ceilLedgerSeq: '',
+      domainId:'20'
+    }
+    let data = await sdk.account.setMetadatas(setMetadatasOperation)
+    console.log('setMetadatas() : ',JSON.stringify(data))
 ```
 
 ### 1.3.6 getAccountMetadatas
@@ -646,13 +649,13 @@ account.getMetadatas(getMetadatasOperation)
 > 示例
 
 ```js
-// 初始化请求参数
-let data = await sdk.account.getMetadatas({
-    address: 'did:bid:efsdhXX7bNYxeYYVasatAi7DPE4nM3Lb',
-    key: '20230203',
-    domainId: '0'
-})
-console.log('getMetadatas() : ', JSON.stringify(data))
+    // 初始化请求参数
+	let data = await sdk.account.getMetadatas({
+          address: 'did:bid:eft6d191modv1cxBC43wjKHk85VVhQDc',
+          key: '20211208',
+          domainId: '20' 
+      })
+    console.log('getMetadatas() : ',JSON.stringify(data))
 ```
 
 ### 1.3.7 setPrivilege
@@ -683,8 +686,8 @@ setPrivilege(accountSetPrivilegeOperation)
 | typeThreshold.type      | Long    | 操作类型，必须大于0                                          |
 | typeThreshold.threshold | Long    | 门限值，大小限制[0, Long.MAX_VALUE]                          |
 | masterWeight            | String  | 选填                                                         |
-| gasPrice                | Long    | 选填，打包费用 (单位是uXHT)，默认100L                        |
-| feeLimit                | Long    | 选填，交易花费的手续费(单位是uXHT)，默认1000000L             |
+| gasPrice                | Long    | 选填，打包费用 (单位是glowstone)，默认100L                   |
+| feeLimit                | Long    | 选填，交易花费的手续费(单位是glowstone)，默认1000000L        |
 | domainId                | Integer | 选填，指定域ID，默认主共识域id(0)                            |
 
 > 响应数据
@@ -708,25 +711,26 @@ setPrivilege(accountSetPrivilegeOperation)
 > 示例
 
 ```js
-// 初始化请求参数
-let accountSetPrivilegeOperation = {
-    sourceAddress: 'did:bid:efsdhXX7bNYxeYYVasatAi7DPE4nM3Lb',
-    privateKey: 'priSPKUk5JSkEK7inJTTs1RFAqvHoVKw6KEhZzsZxuMpGJieU4',
-    txThreshold: '8',
-    signers: [{
+	// 初始化请求参数
+	let accountSetPrivilegeOperation = {
+     sourceAddress:'did:bid:efMrjMzYWUBBLZBwgsWtxEvdfQe5wejB',
+     privateKey:'priSPKqYp19ghxeCykHUrepLRkCRD3a2a9y5MJGF8Kc4qfn2aK',
+     txThreshold:'8',
+     signers: [{
         address: 'did:bid:ef284xXpJLySqXnMcaLVkFWTJyJ6VhpxG',
         weight: '55'
-    }],
-    typeThresholds: [{
-        type: '5',
-        threshold: '51'
-    }],
-    feeLimit: '',
-    gasPrice: '',
-    domainId: '0'
-}
-let data = await sdk.account.setPrivilege(accountSetPrivilegeOperation)
-console.log('setPrivilege() : ', JSON.stringify(data))
+      }],
+     typeThresholds: [{
+       type: '5',
+       threshold: '51',
+     }],
+     feeLimit: '',
+     gasPrice: '',
+     ceilLedgerSeq: '',
+     domainId: '20'
+   }
+   let data = await sdk.account.setPrivilege(accountSetPrivilegeOperation)
+    console.log('setPrivilege() : ',JSON.stringify(data))
 ```
 
 ### 1.3.8 getAccountPriv
@@ -777,18 +781,18 @@ account.getAccountPriv(param)
 > 示例
 
 ```js
-// 初始化请求参数
-let param = {
-    address: 'did:bid:efsdhXX7bNYxeYYVasatAi7DPE4nM3Lb',
-    domainId: '0'
-}
-let data = await sdk.account.getAccountPriv(param)
-console.log('getAccountPriv() : ', JSON.stringify(data))
+    // 初始化请求参数
+    let param = {
+        address: 'did:bid:efMrjMzYWUBBLZBwgsWtxEvdfQe5wejB',
+        domainId: '20'
+    }
+    let data = await sdk.account.getAccountPriv(param)
+    console.log('getAccountPriv() : ',  JSON.stringify(data))
 ```
 
 ## 1.4 合约服务接口列表
 
-​		合约服务接口主要是合约相关的接口，目前有7个接口：
+​		合约服务接口主要是合约相关的接口，目前有6个接口：
 
 | 序号 | 接口                 | 说明                               |
 | ---- | -------------------- | ---------------------------------- |
@@ -837,12 +841,13 @@ contract.checkContractAddress(param)
 > 示例
 
 ```js
-// 初始化请求参数
-let param = {
-    contractAddress: 'did:bid:ef6Wvhc6UhV6HpzXiodewQwYDR56oaPx'
-}
-let data = await sdk.contract.checkContractAddress(param)
-console.log('checkContractAddress() : ', JSON.stringify(data))
+    // 初始化请求参数
+    let param = {
+        contractAddress: 'did:bid:efL7d2Ak1gyUpU4eiM3C9oxvbkhXr4Mu',
+        domainId: '20'
+    }
+    let data = await sdk.contract.checkContractAddress(param)
+    console.log('checkContractAddress() : ',  JSON.stringify(data))
 ```
 
 ### 1.4.2 contractCreate
@@ -862,15 +867,15 @@ contract.createContract(createContractOperation)
 | 参数          | 类型    | 描述                                                         |
 | ------------- | ------- | ------------------------------------------------------------ |
 | senderAddress | string  | 必填，交易源账号，即交易的发起方                             |
-| feeLimit      | Long    | 选填，交易花费的手续费(单位是uXHT)，默认1000000L             |
+| feeLimit      | Long    | 选填，交易花费的手续费(单位是glowstone)，默认1000000L        |
 | privateKey    | String  | 必填，交易源账户私钥                                         |
 | ceilLedgerSeq | Long    | 选填，区块高度限制, 如果大于0，则交易只有在该区块高度之前（包括该高度）才有效 |
 | remarks       | String  | 选填，用户自定义给交易的备注                                 |
-| initBalance   | Long    | 选填，给合约账户的初始化星火令，单位uXHT，1 星火令 = 10^8 uXHT, 大小限制[0, Long.MAX_VALUE] |
+| initBalance   | Long    | 必填，给合约账户的初始化星火令，单位glowstone，1 星火令 = 10^8 星火萤(glowstone), 大小限制[1, Long.MAX_VALUE] |
 | type          | Integer | 选填，合约的类型，默认是0 , 0: javascript，1 :evm 。         |
 | payload       | String  | 必填，对应语种的合约代码                                     |
 | initInput     | String  | 选填，合约代码中init方法的入参                               |
-| gasPrice      | Long    | 选填，打包费用 (单位是uXHT)，默认100L                        |
+| gasPrice      | Long    | 选填，打包费用 (单位是glowstone)，默认100L                   |
 | domainId      | Integer | 选填，指定域ID，默认主共识域id(0)                            |
 
 > 响应数据
@@ -887,7 +892,7 @@ contract.createContract(createContractOperation)
 | INVALID_ADDRESS_ERROR     | 11006  | Invalid address                                  |
 | REQUEST_NULL_ERROR        | 12001  | Request parameter cannot be null                 |
 | PRIVATEKEY_NULL_ERROR     | 11057  | PrivateKeys cannot be empty                      |
-| INVALID_INITBALANCE_ERROR | 11004  | InitBalance must be between 0 and Long.MAX_VALUE |
+| INVALID_INITBALANCE_ERROR | 11004  | InitBalance must be between 1 and Long.MAX_VALUE |
 | PAYLOAD_EMPTY_ERROR       | 11044  | Payload cannot be empty                          |
 | INVALID_FEELIMIT_ERROR    | 11050  | FeeLimit must be between 0 and Long.MAX_VALUE    |
 | SYSTEM_ERROR              | 20000  | System error                                     |
@@ -898,21 +903,21 @@ contract.createContract(createContractOperation)
 
 ```js
     // 初始化请求参数
-let createContractOperation = {
-        sourceAddress: 'did:bid:efsdhXX7bNYxeYYVasatAi7DPE4nM3Lb',
-        privateKey: 'priSPKUk5JSkEK7inJTTs1RFAqvHoVKw6KEhZzsZxuMpGJieU4',
-        payload: "\"use strict\";function init(bar){/*init whatever you want*/return;}function main(input){let para = JSON.parse(input);if (para.do_foo)\n            {\n              let x = {\n                \'hello\' : \'world\'\n              };\n            }\n          }\n          \n          function query(input)\n          { \n            return input;\n          }\n        ",
-        initBalance: '1',
-        remarks: 'create account',
-        type: '0',
-        feeLimit: '102237601',
-        gasPrice: '',
-        ceilLedgerSeq: '',
-        initInput: '1423',
-        domainId: '0'
+	let createContractOperation = {
+        sourceAddress:'did:bid:efQMuPahc3zm7abBUBfj22xZokhZ7rED',
+        privateKey:'priSPKqSR8vTVJ1y8Wu1skBNWMHPeu8nkaerZNKEzkRq3KJix4',
+        payload:"\"use strict\";function init(bar){/*init whatever you want*/return;}function main(input){let para = JSON.parse(input);if (para.do_foo)\n            {\n              let x = {\n                \'hello\' : \'world\'\n              };\n            }\n          }\n          \n          function query(input)\n          { \n            return input;\n          }\n        ",
+        initBalance:'1',
+        remarks:'create account',
+        type:0,
+        feeLimit:'100100000',
+        gasPrice:'',
+        ceilLedgerSeq:'',
+        initInput:'',
+        domainId: '20'
     }
     let data = await sdk.contract.createContract(createContractOperation)
-    console.log('createContract() : ', JSON.stringify(data))
+    console.log('createContract() : ',  JSON.stringify(data))
 ```
 
 ### 1.4.3 getContractInfo
@@ -957,13 +962,13 @@ contract.getContractInfo(param)
 > 示例
 
 ```js
-// 初始化请求参数
-let param = {
-    contractAddress: 'did:bid:ef6Wvhc6UhV6HpzXiodewQwYDR56oaPx',
-    domainId: '0'
-}
-let data = await sdk.contract.getContractInfo(param)
-console.log('getContractInfo() : ', JSON.stringify(data))
+    // 初始化请求参数
+    let param = {
+        contractAddress: 'did:bid:efL7d2Ak1gyUpU4eiM3C9oxvbkhXr4Mu',
+        domainId: '20'
+    }
+    let data = await sdk.contract.getContractInfo(param)
+    console.log('getContractInfo() : ',  JSON.stringify(data))
 ```
 
 ### 1.4.4 getContractAddress
@@ -1008,13 +1013,13 @@ contract.getContractAddress(param)
 > 示例
 
 ```js
-// 初始化请求参数
-let param = {
-    hash: 'e23666dd05c74b511f5884e560a98b67dae4963c652c9be8137a08aafc4158c0',
-    domainId: '0'
-}
-let data = await sdk.contract.getContractAddress(param)
-console.log('getContractAddress() : ', JSON.stringify(data))
+    // 初始化请求参数
+    let param = {
+        hash: '59228dfa8fcd1e65b918dbe30096302f3a4b136d2762200029ed397496f96ada',
+        domainId: '20'
+    }
+    let data = await sdk.contract.getContractAddress(param)
+    console.log('getContractAddress() : ',  JSON.stringify(data))
 ```
 
 ### 1.4.5 contractQuery
@@ -1031,14 +1036,14 @@ contract.contractQuery(contractQueryOperation)
 
 > 请求参数
 
-| 参数            | 类型    | 描述                                             |
-| --------------- | ------- | ------------------------------------------------ |
-| sourceAddress   | String  | 选填，合约触发账户地址                           |
-| contractAddress | String  | 必填，合约账户地址                               |
-| input           | String  | 选填，合约入参                                   |
-| gasPrice        | Long    | 选填，打包费用 (单位是uXHT)，默认100L            |
-| feeLimit        | Long    | 选填，交易花费的手续费(单位是uXHT)，默认1000000L |
-| domainId        | Integer | 选填，指定域ID，默认主共识域id(0)                |
+| 参数            | 类型    | 描述                                                  |
+| --------------- | ------- | ----------------------------------------------------- |
+| sourceAddress   | String  | 选填，合约触发账户地址                                |
+| contractAddress | String  | 必填，合约账户地址                                    |
+| input           | String  | 选填，合约入参                                        |
+| gasPrice        | Long    | 选填，打包费用 (单位是glowstone)，默认100L            |
+| feeLimit        | Long    | 选填，交易花费的手续费(单位是glowstone)，默认1000000L |
+| domainId        | Integer | 选填，指定域ID，默认主共识域id(0)                     |
 
 
 > 响应数据
@@ -1063,16 +1068,16 @@ contract.contractQuery(contractQueryOperation)
 
 ```js
     // 初始化请求参数
-let contractQueryOperation = {
-    sourceAddress: '',
-    contractAddress: 'did:bid:ef6Wvhc6UhV6HpzXiodewQwYDR56oaPx',
-    input: '',
-    feeLimit: '',
-    gasPrice: '',
-    domainId: '0'
-}
-let data = await sdk.contract.contractQuery(contractQueryOperation)
-console.log('contractQuery() : ', JSON.stringify(data))
+	let contractQueryOperation = {
+        sourceAddress:'',
+        contractAddress:'did:bid:efL7d2Ak1gyUpU4eiM3C9oxvbkhXr4Mu',
+        input:'',
+        feeLimit: '',
+        gasPrice: '',
+        domainId: '20'
+    }
+    let data = await sdk.contract.contractQuery(contractQueryOperation)
+    console.log('contractQuery() : ',  JSON.stringify(data))
 ```
 
 ### 1.4.6 contractInvoke
@@ -1092,14 +1097,14 @@ contract.contractInvoke(contractInvokeOperation)
 | 参数            | 类型    | 描述                                                         |
 | --------------- | ------- | ------------------------------------------------------------ |
 | senderAddress   | string  | 必填，交易源账号，即交易的发起方                             |
-| feeLimit        | Long    | 选填，交易花费的手续费(单位是uXHT)，默认1000000L             |
+| feeLimit        | Long    | 选填，交易花费的手续费(单位是glowstone)，默认1000000L        |
 | privateKey      | String  | 必填，交易源账户私钥                                         |
 | ceilLedgerSeq   | Long    | 选填，区块高度限制, 如果大于0，则交易只有在该区块高度之前（包括该高度）才有效 |
 | remarks         | String  | 选填，用户自定义给交易的备注                                 |
 | contractAddress | String  | 必填，合约账户地址                                           |
-| BIFAmount       | Long    | 必填，转账金额                                               |
+| amount          | Long    | 必填，转账金额                                               |
 | input           | String  | 选填，待触发的合约的main()入参                               |
-| gasPrice        | Long    | 选填，打包费用 (单位是uXHT)，默认100L                        |
+| gasPrice        | Long    | 选填，打包费用 (单位是glowstone)，默认100L                   |
 | domainId        | Integer | 选填，指定域ID，默认主共识域id(0)                            |
 
 > 响应数据
@@ -1128,20 +1133,20 @@ contract.contractInvoke(contractInvokeOperation)
 
 ```js
     // 初始化请求参数
-let contractInvokeOperation = {
-    sourceAddress: 'did:bid:efsdhXX7bNYxeYYVasatAi7DPE4nM3Lb',
-    privateKey: 'priSPKUk5JSkEK7inJTTs1RFAqvHoVKw6KEhZzsZxuMpGJieU4',
-    contractAddress: 'did:bid:ef6Wvhc6UhV6HpzXiodewQwYDR56oaPx',
-    ceilLedgerSeq: '',
-    feeLimit: '',
-    gasPrice: '',
-    remarks: 'contractInvoke',
-    BIFAmount: '1',
-    input: '',
-    domainId: '0'
-}
-let data = await sdk.contract.contractInvoke(contractInvokeOperation)
-console.log('contractInvoke() : ', JSON.stringify(data))
+	let contractInvokeOperation = {
+        sourceAddress:'did:bid:efQMuPahc3zm7abBUBfj22xZokhZ7rED',
+        privateKey:'priSPKqSR8vTVJ1y8Wu1skBNWMHPeu8nkaerZNKEzkRq3KJix4',
+        contractAddress:'did:bid:efL7d2Ak1gyUpU4eiM3C9oxvbkhXr4Mu',
+        ceilLedgerSeq:'',
+        feeLimit:'',
+        gasPrice: '',
+        remarks:'contractInvoke',
+        amount:0,
+        input:'',
+        domainId: '20'
+    }
+    let data = await sdk.contract.contractInvoke(contractInvokeOperation)
+    console.log('contractInvoke() : ',  JSON.stringify(data))
 ```
 
 ### 1.4.7 batchContractInvoke
@@ -1161,8 +1166,8 @@ contract.batchContractInvoke(contractInvokeRequestOperation)
 | 参数          | 类型                             | 描述                                                         |
 | ------------- | -------------------------------- | ------------------------------------------------------------ |
 | senderAddress | string                           | 必填，交易源账号，即交易的发起方                             |
-| gasPrice      | Long                             | 选填，打包费用 (单位是uXHT)默认，默认100L                    |
-| feeLimit      | Long                             | 选填，交易花费的手续费(单位是uXHT)，默认1000000L             |
+| gasPrice      | Long                             | 选填，打包费用 (单位是glowstone)默认，默认100L               |
+| feeLimit      | Long                             | 选填，交易花费的手续费(单位是glowstone)，默认1000000L        |
 | privateKey    | String                           | 必填，交易源账户私钥                                         |
 | ceilLedgerSeq | Long                             | 选填，区块高度限制, 如果大于0，则交易只有在该区块高度之前（包括该高度）才有效 |
 | remarks       | String                           | 选填，用户自定义给交易的备注                                 |
@@ -1200,45 +1205,45 @@ contract.batchContractInvoke(contractInvokeRequestOperation)
 > 示例
 
 ```js
-let senderAddress = 'did:bid:efsdhXX7bNYxeYYVasatAi7DPE4nM3Lb'
-let senderPrivateKey = 'priSPKUk5JSkEK7inJTTs1RFAqvHoVKw6KEhZzsZxuMpGJieU4'
-let contractAddress = 'did:bid:ef6Wvhc6UhV6HpzXiodewQwYDR56oaPx'
-let amount = '0'
-const destAddress1 = sdk.keypair.getBidAndKeyPair().encAddress
-const destAddress2 = sdk.keypair.getBidAndKeyPair().encAddress
-let input1 = '{"method":"creation","params":{"document":{"@context": ["https://w3.org/ns/did/v1"],"context": "https://w3id.org/did/v1","id": "' + destAddress1 + '", "version": "1"}}}'
-let input2 = '{"method":"creation","params":{"document":{"@context": ["https://w3.org/ns/did/v1"],"context": "https://w3id.org/did/v1","id": "' + destAddress2 + '", "version": "1"}}}'
+     let senderAddress = 'did:bid:efnVUgqQFfYeu97ABf6sGm3WFtVXHZB2'
+    let senderPrivateKey = 'priSPKkWVk418PKAS66q4bsiE2c4dKuSSafZvNWyGGp2sJVtXL'
+    let contractAddress = 'did:bid:efHtDebBjqEsgEVqyiwvHwdPWSnHmkzy'
+    let amount = '0'
+    const destAddress1 = sdk.keypair.getBidAndKeyPair().encAddress
+    const destAddress2 = sdk.keypair.getBidAndKeyPair().encAddress
+    let input1 = '{"method":"creation","params":{"document":{"@context": ["https://w3.org/ns/did/v1"],"context": "https://w3id.org/did/v1","id": "' + destAddress1 + '", "version": "1"}}}'
+    let input2 = '{"method":"creation","params":{"document":{"@context": ["https://w3.org/ns/did/v1"],"context": "https://w3id.org/did/v1","id": "' + destAddress2 + '", "version": "1"}}}'
 
-let operations = []
-let contractInvokeOperation1 = {
-    contractAddress: contractAddress,
-    amount: amount,
-    input: input1
-}
-let contractInvokeOperation2 = {
-    contractAddress: contractAddress,
-    amount: amount,
-    input: input2
-}
-operations.push(contractInvokeOperation1)
-operations.push(contractInvokeOperation2)
+    let operations = []
+    let contractInvokeOperation1 = {
+        contractAddress: contractAddress,
+        amount: amount,
+        input: input1
+    }
+    let contractInvokeOperation2 = {
+        contractAddress: contractAddress,
+        amount: amount,
+        input: input2
+    }
+    operations.push(contractInvokeOperation1)
+    operations.push(contractInvokeOperation2)
 
-let contractInvokeRequestOperation = sdk.operaction.contractInvokeRequestOperation
-contractInvokeRequestOperation.setSenderAddress(senderAddress)
-contractInvokeRequestOperation.setPrivateKey(senderPrivateKey)
-contractInvokeRequestOperation.setRemarks('contract invoke')
-contractInvokeRequestOperation.setDomainId('0')
-contractInvokeRequestOperation.setCeilLedgerSeq('')
-contractInvokeRequestOperation.setOperations(operations)
-let data = await sdk.contract.batchContractInvoke(contractInvokeRequestOperation)
-console.log('batchContractInvoke() : ', JSON.stringify(data))
+    let contractInvokeRequestOperation = sdk.operaction.contractInvokeRequestOperation
+    contractInvokeRequestOperation.setSenderAddress(senderAddress)
+    contractInvokeRequestOperation.setPrivateKey(senderPrivateKey)
+    contractInvokeRequestOperation.setRemarks('contract invoke')
+    contractInvokeRequestOperation.setDomainId('0')
+    contractInvokeRequestOperation.setCeilLedgerSeq('')
+    contractInvokeRequestOperation.setOperations(operations)
+    let data = await sdk.contract.batchContractInvoke(contractInvokeRequestOperation)
+    console.log('batchContractInvoke() : ', JSON.stringify(data))
 ```
 
 
 
 ## 1.5 交易服务接口列表
 
-​		交易服务接口主要是交易相关的接口，目前有8个接口：
+​		交易服务接口主要是交易相关的接口，目前有4个接口：
 
 | 序号 | 接口               | 说明                               |
 | ---- | ------------------ | ---------------------------------- |
@@ -1273,8 +1278,8 @@ transaction.gasSend(gasSendOperation)
 | remarks       | String  | 选填，用户自定义给交易的备注                                 |
 | destAddress   | String  | 必填，发起方地址                                             |
 | amount        | Long    | 必填，转账金额                                               |
-| gasPrice      | Long    | 选填，打包费用 (单位是uXHT)，默认100L                        |
-| feeLimit      | Long    | 选填，交易花费的手续费(单位是uXHT)，默认1000000L             |
+| gasPrice      | Long    | 选填，打包费用 (单位是glowstone)，默认100L                   |
+| feeLimit      | Long    | 选填，交易花费的手续费(单位是glowstone)，默认1000000L        |
 | domainId      | Integer | 选填，指定域ID，默认主共识域id(0)                            |
 
 > 响应数据
@@ -1300,20 +1305,20 @@ transaction.gasSend(gasSendOperation)
 > 示例
 
 ```js
-// 初始化请求参数
-let gasSendOperation = {
-    sourceAddress: 'did:bid:efsdhXX7bNYxeYYVasatAi7DPE4nM3Lb',
-    privateKey: 'priSPKUk5JSkEK7inJTTs1RFAqvHoVKw6KEhZzsZxuMpGJieU4',
-    destAddress: 'did:bid:efYhALrHoHiaVnoZgRgJbCghZZdzkQUh',
-    remarks: 'gasSend',
-    amount: '10',
-    ceilLedgerSeq: '',
-    feeLimit: '',
-    gasPrice: '',
-    domainId: '0'
-}
-let data = await sdk.transaction.gasSend(gasSendOperation)
-console.log('gasSend() : ', JSON.stringify(data))
+    // 初始化请求参数
+    let gasSendOperation = {
+        sourceAddress:'did:bid:efnVUgqQFfYeu97ABf6sGm3WFtVXHZB2',
+        privateKey:'priSPKkWVk418PKAS66q4bsiE2c4dKuSSafZvNWyGGp2sJVtXL',
+        destAddress:'did:bid:efYhALrHoHiaVnoZgRgJbCghZZdzkQUh',
+        remarks:'gasSend',
+        amount:'100000000',
+        ceilLedgerSeq:'',
+        feeLimit: '',
+        gasPrice: '',
+        domainId: '20'
+    }
+    let data = await sdk.transaction.gasSend(gasSendOperation)
+    console.log('gasSend() : ',  JSON.stringify(data))
 ```
 
 ### 1.5.2 getTransactionInfo
@@ -1366,13 +1371,13 @@ transaction.getTransactionInfo(param)
 > 示例
 
 ```js
-// 初始化请求参数
-let param = {
-    hash: 'e23666dd05c74b511f5884e560a98b67dae4963c652c9be8137a08aafc4158c0',
-    domainId: '0'
-}
-let data = await sdk.transaction.getTransactionInfo(param)
-console.log('getTransactionInfo() : ', JSON.stringify(data))
+    // 初始化请求参数
+    let param = {
+        hash: '0390905e5970f1bf262b37fc11d7b2b4b5e28d9a33006584c4940c60fd283518',
+        domainId: '20'
+    }
+    let data = await sdk.transaction.getTransactionInfo(param)
+    console.log('getTransactionInfo() : ',  JSON.stringify(data))
 ```
 
 ### 1.5.3 evaluateFee
@@ -1387,17 +1392,16 @@ console.log('getTransactionInfo() : ', JSON.stringify(data))
 transaction.evaluateFee(info)
 ```
 
-> 请求参数 
+> 请求参数
 
-| 参数          | 类型                    | 描述                               |
-| ------------- | ----------------------- | ---------------------------------- |
-| senderAddress | string                  | 必填，交易源账号，即交易的发起方   |
-| privateKey    | String                  | 必填，交易源账户私钥               |
-| operations    | [Operation](#Operation) | 必填，待提交的操作，不能为空       |
-| gasPrice      | Long                    | 选填，打包费用 (单位是uXHT)        |
-| feeLimit      | Long                    | 选填，交易花费的手续费(单位是uXHT) |
-| domainId      | Integer                 | 选填，指定域ID，默认主共识域id(0)  |
-| remarks       | String                  | 选填，备注                         |
+| 参数          | 类型                    | 描述                                    |
+| ------------- | ----------------------- | --------------------------------------- |
+| senderAddress | string                  | 必填，交易源账号，即交易的发起方        |
+| privateKey    | String                  | 必填，交易源账户私钥                    |
+| operations    | [Operation](#Operation) | 必填，待提交的操作，不能为空            |
+| gasPrice      | Long                    | 必填，打包费用 (单位是glowstone)        |
+| feeLimit      | Long                    | 选填，交易花费的手续费(单位是glowstone) |
+| domainId      | Integer                 | 选填，指定域ID，默认主共识域id(0)       |
 
 #### Operation
 
@@ -1435,72 +1439,26 @@ transaction.evaluateFee(info)
 
 ```js
 // 初始化参数
-let setMetadata = sdk.operaction.accountSetMetadataOperation
-setMetadata.setKey('mykey1')
-setMetadata.setValue('myvalue1')
-setMetadata.setVersion('1')
-setMetadata.setDeleteFlag(true)
-
-// accountCreate
-let accountCreateOperation = sdk.operaction.accountCreateOperation
-accountCreateOperation.setDestAddress(sdk.keypair.getBidAndKeyPair().encAddress)
-accountCreateOperation.setInitBalance(1)
-
-// accountCreate
-let accountSetPrivilegeOperation = sdk.operaction.accountSetPrivilegeOperation
-let signers = [
-    {
-        'address': 'did:bid:ef29FfnB21n7wS5U4VY1rCzbo8tjPsJv4',
-        'weight': 2
-    }
-]
-let typeThresholds = [
-    {
-        'type': 1,
-        'threshold': 1
-    },
-    {
-        'type': 7,
-        'threshold': 2
-    }
-]
-accountSetPrivilegeOperation.setMasterWeight(1)
-accountSetPrivilegeOperation.setSigners(signers)
-accountSetPrivilegeOperation.setTxThreshold(2)
-accountSetPrivilegeOperation.setTypeThresholds(typeThresholds)
-
-// gasSendOperation
-let gasSendOperation = sdk.operaction.gasSendOperation
-gasSendOperation.setAmount(1000)
-gasSendOperation.setDestAddress('did:bid:efYhALrHoHiaVnoZgRgJbCghZZdzkQUh')
-
-// contractCreateOperation
-let contractCreateOperation = sdk.operaction.contractCreateOperation
-contractCreateOperation.setPayload("\"use strict\";function init(bar){/*init whatever you want*/return;}function main(input){let para = JSON.parse(input);if (para.do_foo)\n            {\n              let x = {\n                \'hello\' : \'world\'\n              };\n            }\n          }\n          \n          function query(input)\n          { \n            return input;\n          }\n        ",)
-contractCreateOperation.setInitBalance(1)
-contractCreateOperation.setType(1)
-
-// contractInvokeOperation
-let contractInvokeOperation = sdk.operaction.contractInvokeOperation
-contractInvokeOperation.setContractAddress('did:bid:efL7d2Ak1gyUpU4eiM3C9oxvbkhXr4Mu')
+let privateContractCallOperation=sdk.operaction.privateContractCallOperation
+privateContractCallOperation.setType(0)
+privateContractCallOperation.setFrom('bDRE8iIfGdwDeQOcJqZabZQH5Nd6cfTOMOorudtgXjQ=')
+privateContractCallOperation.setTo(['bwPdcwfUEtSZnaDmi2Nvj9HTwOcRvCRDh0cRdvX9BFw='])
+privateContractCallOperation.setDestAddress('did:bid:efGSDpr4Fo4TEnHx1kBBSgSAfTt85kY6')
+privateContractCallOperation.setInput('{\"method\":\"queryBanance\",\"params\":{\"address\":\"567890哈哈=======\"}}')
 
 let request = {
-    sourceAddress: 'did:bid:efnVUgqQFfYeu97ABf6sGm3WFtVXHZB2',
-    privateKey: 'priSPKkWVk418PKAS66q4bsiE2c4dKuSSafZvNWyGGp2sJVtXL',
-    operations: contractInvokeOperation,
-    feeLimit: '20',
-    gasPrice: '2',
-    domainId: '0',
-    remarks: Buffer.from('evaluate fees', 'utf-8').toString('hex')
+    sourceAddress: 'did:bid:efAsXt5zM2Hsq6wCYRMZBS5Q9HvG2EmK',
+    privateKey: 'priSPKUudyVAi5WrhHJU1vCJZYyBL5DNd36MPhbYgHuDPz5E7r',
+    operations: privateContractCallOperation,
+    feeLimit: '',
+    gasPrice: '',
+    domainId: '20'
 }
 let data = await sdk.transaction.evaluateFee(request)
-console.log('evaluateFee() : ', JSON.stringify(data))
-
+console.log('evaluateFee() : ',  JSON.stringify(data))
 ```
 
-
-
-### 1.5.4 BIFSubmit
+### 1.5.4 BIFSubmit(v1.0.3)
 
 > 接口说明
 
@@ -1509,16 +1467,15 @@ console.log('evaluateFee() : ', JSON.stringify(data))
 > 调用方法
 
 ```js
-transaction.submitTrans(request)
+transaction.BIFSubmit(request)
 ```
 
-> 请求参数 
+> 请求参数
 
 | 参数          | 类型   | 描述               |
 | ------------- | ------ | ------------------ |
 | serialization | String | 必填，交易序列化值 |
-| signData      | String | 必填，签名数据     |
-| publicKey     | String | 必填，签名者公钥   |
+| signatures    | String | 必填，签名数据     |
 
 > 响应数据
 
@@ -1539,24 +1496,42 @@ transaction.submitTrans(request)
 
 > 示例
 
+- 方式一：单签名
+
+
 ```js
 // 初始化参数
-// 初始化参数
-    let serialization = ''
-    let privateKey = 'priSPKkWVk418PKAS66q4bsiE2c4dKuSSafZvNWyGGp2sJVtXL'
-    const publicKey = await sdk.keypair.getEncPublicKey(privateKey)
-    // sign serialization
-    let signData = sdk.transaction.signTransSerialization([privateKey]
-        , serialization)
-    // submit transaction
-    let request = {
-        txBlob: serialization,
-        signatures: signData,
-        privateKey: publicKey
-    }
-    let transactionInfo = await sdk.transaction.submitTrans(request)
-    console.log('BIFSubmit() : ', JSON.stringify(transactionInfo))
+let serialization = '0a286469643a6269643a65666e5655677151466659657539374142663673476d335746745658485a4232104f22330807522f0a286469643a6269643a65665968414c72486f486961566e6f5a6752674a624367685a5a647a6b5155681080c2d72f2a0767617353656e6430c0843d3864'
+let privateKey = 'priSPKkWVk418PKAS66q4bsiE2c4dKuSSafZvNWyGGp2sJVtXL'
+// sign serialization
+let signatures = sdk.transaction.signTransSerialization([privateKey]
+                                                      , serialization)
+// submit transaction
+let transactionInfo = await sdk.transaction.submitTrans(
+    serialization,
+    signatures
+)
+console.log('submitTrans() : ', JSON.stringify(transactionInfo))
+```
 
+- 方式二：多签名
+
+
+```js
+// 初始化参数
+let serialization = '0a286469643a6269643a65666e5655677151466659657539374142663673476d335746745658485a4232104f22330807522f0a286469643a6269643a65665968414c72486f486961566e6f5a6752674a624367685a5a647a6b5155681080c2d72f2a0767617353656e6430c0843d3864'
+let privateKey1 = 'priSPKkWVk418PKAS66q4bsiE2c4dKuSSafZvNWyGGp2sJVtXL'
+let privateKey2 = 'priSPKpeenYnvVLaGkCg6Lm5c8vsq85htyF62xyFz54eCkJ2rK'
+// sign serialization
+let signatures = sdk.transaction.signTransSerialization([privateKey1, privateKey2]
+                                                        , serialization)
+let request = {
+    serialization: serialization,
+    signatures: signatures
+}
+// submit transaction
+let transactionInfo = await sdk.transaction.BIFSubmit(request)
+console.log('BIFSubmit() : ', JSON.stringify(transactionInfo))
 ```
 
 ### 1.5.5 getTxCacheSize
@@ -1593,9 +1568,11 @@ transaction.getTxCacheSize(domainId)
 > 示例
 
 ```js
-let domainId = '0'
-let data = await sdk.transaction.getTxCacheSize(domainId)
-console.log('getTxCacheSize() : ', JSON.stringify(data))
+    it('test getTxCacheSize', async () => {
+        let domainId='20'
+        let data = await sdk.transaction.getTxCacheSize(domainId)
+        console.log('getTxCacheSize() : ', JSON.stringify(data))
+    })
 ```
 
 ### 1.5.6 batchEvaluateFee
@@ -1612,14 +1589,14 @@ transaction.batchEvaluateFee(request)
 
 > 请求参数
 
-| 参数          | 类型                    | 描述                               |
-| ------------- | ----------------------- | ---------------------------------- |
-| senderAddress | string                  | 必填，交易源账号，即交易的发起方   |
-| privateKey    | String                  | 必填，交易源账户私钥               |
-| operations    | [Operation](#Operation) | 必填，待提交的操作，不能为空       |
-| gasPrice      | Long                    | 必填，打包费用 (单位是uXHT)        |
-| feeLimit      | Long                    | 选填，交易花费的手续费(单位是uXHT) |
-| domainId      | Integer                 | 选填，指定域ID，默认主共识域id(0)  |
+| 参数          | 类型                    | 描述                                    |
+| ------------- | ----------------------- | --------------------------------------- |
+| senderAddress | string                  | 必填，交易源账号，即交易的发起方        |
+| privateKey    | String                  | 必填，交易源账户私钥                    |
+| operations    | [Operation](#Operation) | 必填，待提交的操作，不能为空            |
+| gasPrice      | Long                    | 必填，打包费用 (单位是glowstone)        |
+| feeLimit      | Long                    | 选填，交易花费的手续费(单位是glowstone) |
+| domainId      | Integer                 | 选填，指定域ID，默认主共识域id(0)       |
 
 #### Operation
 
@@ -1723,12 +1700,12 @@ transaction.getTxCacheData(request)
 > 示例
 
 ```js
-let request = {
-    domainId: '0',
-    hash: ''
-}
-let data = await sdk.transaction.getTxCacheData(request)
-console.log('getTxCacheData() : ', JSON.stringify(data))
+    let request = {
+        domainId: '0',
+        hash: ''
+    }
+    let data = await sdk.transaction.getTxCacheData(request)
+    console.log('getTxCacheData() : ', JSON.stringify(data))
 ```
 
 ### 1.5.8 parseBlob
@@ -1772,9 +1749,93 @@ transaction.parseBlob(transactionBlob)
 > 示例
 
 ```js
-let transactionBlob = '0a286469643a6269643a65666e5655677151466659657539374142663673476d335746745658485a4232100d228a03080122850312f80212f5022275736520737472696374223b66756e6374696f6e20717565727942616e616e63652861646472657373290d0a7b72657475726e20222074657374207175657279207072697661746520636f6e7472616374223b7d0d0a66756e6374696f6e2063726561746528696e707574290d0a7b6c6574206b6579203d2022707269766174655f74785f222b696e7075742e69643b6c65742076616c7565203d2022736574207072697661746520696420222b696e7075742e69643b436861696e2e73746f7265286b65792c76616c7565293b7d0d0a66756e6374696f6e20696e697428696e707574290d0a7b72657475726e3b7d0d0a66756e6374696f6e206d61696e28696e707574290d0a7b72657475726e3b7d0d0a66756e6374696f6e20717565727928696e707574290d0a7b6c6574206b6579203d2022707269766174655f74785f222b696e7075742e69643b6c65742064617461203d20436861696e2e6c6f6164286b6579293b72657475726e20646174613b7d1a041a02080128a08d062a080123456789abcdef30c0843d38016014'
+ let transactionBlob = '0A276469643A6269643A324E4A4C46343931536431553434323270476B50715467686946664B3337751003225C080712276469643A6269643A324E4A4C46343931536431553434323270476B50715467686946664B333775522F0A276469643A6269643A32695277744E53666841753739754A73624C6B78694333374A554C437235791080A9E0870430C0843D38E807'
     let data = await sdk.transaction.parseBlob(transactionBlob)
     console.log('parseBlob() : ', JSON.stringify(data))
+```
+
+### 1.5.9 batchGasSend
+
+> 接口说明
+
+   	该接口用于批量发起交易。
+
+> 调用方法
+
+```java
+transaction.batchGasSend(gasSendRequestOperation)
+```
+
+> 请求参数
+
+| 参数          | 类型                      | 描述                                                         |
+| ------------- | ------------------------- | ------------------------------------------------------------ |
+| senderAddress | string                    | 必填，交易源账号，即交易的发起方                             |
+| gasPrice      | Long                      | 选填，打包费用 (单位是glowstone)默认，默认100L               |
+| feeLimit      | Long                      | 选填，交易花费的手续费(单位是glowstone)，默认1000000L        |
+| privateKey    | String                    | 必填，交易源账户私钥                                         |
+| ceilLedgerSeq | Long                      | 选填，区块高度限制, 如果大于0，则交易只有在该区块高度之前（包括该高度）才有效 |
+| remarks       | String                    | 选填，用户自定义给交易的备注                                 |
+| domainId      | Integer                   | 选填，指定域ID，默认主共识域id(0)                            |
+| operations    | List<BIFGasSendOperation> | 必填，合约调用集合                                           |
+
+| BIFGasSendOperation |        |                    |
+| ------------------- | ------ | ------------------ |
+| destAddress         | String | 必填，合约账户地址 |
+| amount              | Long   | 必填，转账金额     |
+
+
+
+> 响应数据
+
+| 参数 | 类型   | 描述     |
+| ---- | ------ | -------- |
+| hash | string | 交易hash |
+
+
+> 错误码
+
+| 异常                          | 错误码 | 描述                                          |
+| ----------------------------- | ------ | --------------------------------------------- |
+| INVALID_ADDRESS_ERROR         | 11006  | Invalid address                               |
+| REQUEST_NULL_ERROR            | 12001  | Request parameter cannot be null              |
+| PRIVATEKEY_NULL_ERROR         | 11057  | PrivateKeys cannot be empty                   |
+| INVALID_CONTRACTADDRESS_ERROR | 11037  | Invalid contract address                      |
+| INVALID_AMOUNT_ERROR          | 11024  | Amount must be between 0 and Long.MAX_VALUE   |
+| INVALID_FEELIMIT_ERROR        | 11050  | FeeLimit must be between 0 and Long.MAX_VALUE |
+| SYSTEM_ERROR                  | 20000  | System error                                  |
+
+
+> 示例
+
+```js
+let senderAddress = 'did:bid:efnVUgqQFfYeu97ABf6sGm3WFtVXHZB2'
+    let senderPrivateKey = 'priSPKkWVk418PKAS66q4bsiE2c4dKuSSafZvNWyGGp2sJVtXL'
+    let amount = '0'
+    const destAddress1 = sdk.keypair.getBidAndKeyPair().encAddress
+    const destAddress2 = sdk.keypair.getBidAndKeyPair().encAddress
+
+    let operations = []
+    let gasSendOperation1 = {
+        destAddress: destAddress1,
+        amount: amount
+    }
+    let gasSendOperation2 = {
+        destAddress: destAddress2,
+        amount: amount
+    }
+    operations.push(gasSendOperation1)
+    operations.push(gasSendOperation2)
+
+    let gasSendRequestOperation = sdk.operaction.gasSendRequestOperation
+    gasSendRequestOperation.setSenderAddress(senderAddress)
+    gasSendRequestOperation.setPrivateKey(senderPrivateKey)
+    gasSendRequestOperation.setRemarks('gas send')
+    gasSendRequestOperation.setDomainId('0')
+    gasSendRequestOperation.setCeilLedgerSeq('')
+    gasSendRequestOperation.setOperations(operations)
+    let data = await sdk.transaction.batchGasSend(gasSendRequestOperation)
+    console.log('batchGasSend() : ', JSON.stringify(data))
 ```
 
 
@@ -1829,11 +1890,11 @@ block.getBlockNumber(param)
 
 ```js
     // 初始化请求参数
-let param = {
-    domainId: '0'
-}
-let data = await sdk.block.getBlockNumber(param)
-console.log('getBlockNumber() : ', JSON.stringify(data))
+    let param = {
+        domainId: '20'
+    }
+	let data = await sdk.block.getBlockNumber(param)
+    console.log('getBlockNumber() : ',  JSON.stringify(data))
 ```
 
 ### 1.6.2 getTransactions
@@ -1876,15 +1937,15 @@ block.getTransactions(param)
 
 ```js
     // 初始化请求参数
-let param = {
-    blockNumber: '1',
-    domainId: '0'
-}
-let data = await sdk.block.getTransactions(param)
-console.log('getTransactions() : ', JSON.stringify(data))
+    let param = {
+        blockNumber: '1',
+        domainId: '20'
+    }
+    let data = await sdk.block.getTransactions(param)
+    console.log('getTransactions() : ',  JSON.stringify(data))
 ```
 
-### 1.6.3 getBlockInfo
+### 1.6.3 getBlockInfo(v1.0.3)
 
 > 接口说明
 
@@ -1902,18 +1963,19 @@ block.getBlockInfo(param)
 | ----------- | ------- | --------------------------------- |
 | blockNumber | Long    | 必填，待查询的区块高度            |
 | domainId    | Integer | 选填，指定域ID，默认主共识域id(0) |
+| withLeader  | boolean | 选填，出块人信息,默认false        |
 
 > 响应数据
 
-| 参数               | 类型           | 描述         |
-| ------------------ | -------------- | ------------ |
-| header             | BIFBlockHeader | 区块信息     |
-| header.confirmTime | Long           | 区块确认时间 |
-| header.number      | Long           | 区块高度     |
-| header.txCount     | Long           | 交易总量     |
-| header.version     | String         | 区块版本     |
-| header.hash        | String         | 区块HASH     |
-| leader             | String         | 出块节点参数 |
+| 参数               | 类型           | 描述                               |
+| ------------------ | -------------- | ---------------------------------- |
+| header             | BIFBlockHeader | 区块信息                           |
+| header.confirmTime | Long           | 区块确认时间                       |
+| header.number      | Long           | 区块高度                           |
+| header.txCount     | Long           | 交易总量                           |
+| header.version     | String         | 区块版本                           |
+| header.hash        | String         | 区块HASH                           |
+| ledger             | String         | 出块人信息(withLedger为true时返回) |
 
 > 错误码
 
@@ -1928,13 +1990,14 @@ block.getBlockInfo(param)
 > 示例
 
 ```js
-// 初始化请求参数
-let param = {
-    blockNumber: '61360',
-    domainId: '0'
-}
-let data = await sdk.block.getBlockInfo(param)
-console.log('getBlockInfo() : ',  JSON.stringify(data))
+    // 初始化请求参数
+    let param = {
+        blockNumber: '61360',
+        domainId: '20',
+        withLeader: true
+    }
+    let data = await sdk.block.getBlockInfo(param)
+    console.log('getBlockInfo() : ',  JSON.stringify(data))
 ```
 
 ### 1.6.4 getBlockLatestInfo
@@ -1982,7 +2045,7 @@ block.getBlockLatestInfo(param)
 ```js
     // 初始化请求参数
     let param = {
-        domainId: '0'
+        domainId: '20'
     }
     let data = await sdk.block.getBlockLatestInfo(param)
     console.log('getBlockLatestInfo() : ',  JSON.stringify(data))
@@ -2030,7 +2093,7 @@ block.getValidators(param)
     // 初始化请求参数
     let param = {
         blockNumber: '1',
-        domainId: '0'
+        domainId: '20'
     }
     let data = await sdk.block.getValidators(param)
     console.log('getValidators() : ',  JSON.stringify(data))
@@ -2074,7 +2137,7 @@ block.getLatestValidators(param)
 ```js
     // 初始化请求参数
     let param = {
-        domainId: '0'
+        domainId: '20'
     }
     let data = await sdk.block.getLatestValidators(param)
     console.log('getLatestValidators() : ',  JSON.stringify(data))
@@ -2087,7 +2150,7 @@ block.getLatestValidators(param)
 | ACCOUNT_CREATE_ERROR                      | 11001  | Failed to create the account                                 |
 | INVALID_SOURCEADDRESS_ERROR               | 11002  | Invalid sourceAddress                                        |
 | INVALID_DESTADDRESS_ERROR                 | 11003  | Invalid destAddress                                          |
-| INVALID_INITBALANCE_ERROR                 | 11004  | InitBalance must between 0 and max(int64)                    |
+| INVALID_INITBALANCE_ERROR                 | 11004  | InitBalance must between 1 and max(int64)                    |
 | SOURCEADDRESS_EQUAL_DESTADDRESS_ERROR     | 11005  | SourceAddress cannot be equal to destAddress                 |
 | INVALID_ADDRESS_ERROR                     | 11006  | Invalid address                                              |
 | CONNECTNETWORK_ERROR                      | 11007  | Failed to connect to the network                             |

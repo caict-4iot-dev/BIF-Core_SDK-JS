@@ -1,5 +1,4 @@
 'use strict'
-
 const BIFCoreSDK = require('../index')
 const sdk = new BIFCoreSDK({
     host: 'http://test.bifcore.bitfactory.cn'
@@ -10,8 +9,8 @@ const ContractInvokeOperation = require('../lib/operation/contractInvokeOperatio
  */
 it('test checkContractAddress', async () => {
     let param = {
-        contractAddress: 'did:bid:efL7d2Ak1gyUpU4eiM3C9oxvbkhXr4Mu',
-        domainId: '20'
+        contractAddress: 'did:bid:efnVUgqQFfYeu97ABf6sGm3WFtVXHZB2'
+        // domainId: '20'
     }
     let data = await sdk.contract.checkContractAddress(param)
     console.log('checkContractAddress() : ', JSON.stringify(data))
@@ -55,9 +54,8 @@ it('test getContractAddress', async () => {
  */
 it('test getContractInfo', async () => {
     let param = {
-        contractAddress: 'did:bid:efdzmPKbie68djWpAdyAP8uLY1WtVoXP',
-        // contractAddress: 'did:bid:efnVUgqQFfYeu97ABf6sGm3WFtVXHZB',
-        domainId: '20'
+        contractAddress: 'did:bid:efRH1Lbsuqwc6jRw3hK4H5Hp2RhHnryS',
+        domainId: '22'
     }
     let data = await sdk.contract.getContractInfo(param)
     console.log('getContractInfo() : ', JSON.stringify(data))

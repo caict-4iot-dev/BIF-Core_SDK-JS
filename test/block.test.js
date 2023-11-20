@@ -33,7 +33,8 @@ it('test getTransactions', async () => {
 it('test getBlockInfo', async () => {
     let param = {
         blockNumber: '61360',
-        domainId: '20'
+        domainId: '0',
+        withLedger: true
     }
     let data = await sdk.block.getBlockInfo(param)
     console.log('getBlockInfo() : ', JSON.stringify(data))

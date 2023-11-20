@@ -1,6 +1,6 @@
 {
     "name": "bifcore-sdk-nodejs",
-    "version": "1.0.4",
+    "version": "1.0.7",
     "description": "bifcore sdk nodejs",
     "main": "index.js",
     "scripts": {
@@ -13,28 +13,29 @@
     "author": "caict",
     "license": "Apache",
     "dependencies": {
-        "ajv": "^6.10.2",
-        "ajv-errors": "^1.0.1",
+        "ajv": "^8.0.1",
+        "ajv-errors": "^3.0.0",
         "bignumber.js": "^9.0.0",
         "bip32": "^2.0.6",
-        "bip39": "^3.0.3",
+        "bip39": "^3.1.0",
         "brdc-sjcl": "^1.0.9",
         "brdc-sm-crypto": "^0.3.7",
         "co-wrap-all": "^1.0.0",
         "crypto-js": "^3.1.9-1",
-        "eslint-plugin-vue": "^8.2.0",
-        "google-protobuf": "^3.10.0-rc.1",
-        "is-type-of": "^1.2.1",
-        "json-bigint": "^0.2.3",
+        "eslint-plugin-vue": "^9.17.0",
+        "google-protobuf": "^3.21.2",
+        "is-type-of": "^1.4.0",
+        "json-bigint": "^1.0.0",
         "long": "^4.0.0",
         "merge-descriptors": "^1.0.1",
         "randombytes": "^2.1.0",
         "request-promise": "^4.2.2",
         "sha256": "^0.2.0",
-        "tiny-secp256k1": "^1.1.6"
+        "tiny-secp256k1": "^2.2.3",
+        "bitfactory-js-hd-key": "^1.0.0"
     },
     "devDependencies": {
-        "babel-cli": "^6.26.0",
+        "babel-cli": "^7.0.0-beta.3",
         "babel-eslint": "^8.0.3",
         "babel-plugin-transform-class-properties": "^6.24.1",
         "babel-plugin-transform-es2015-destructuring": "^6.23.0",
@@ -44,13 +45,13 @@
         "babel-plugin-transform-object-rest-spread": "^6.26.0",
         "babel-plugin-transform-strict-mode": "^6.24.1",
         "babel-preset-es2015": "^6.24.1",
-        "babel-register": "^6.26.0",
-        "eslint": "^6.8.0",
-        "eslint-plugin-react": "^7.27.1",
+        "babel-register": "^7.0.0-beta.3",
+        "eslint": "^8.49.0",
+        "eslint-plugin-react": "^7.33.2",
         "jest": "^24.9.0"
     },
     "repository": {
         "type": "git",
-        "url": "https://github.com/npm/npm.git"
+        "url": "https://github.com/caict-4iot-dev/BIF-Core_SDK-JS.git"
     }
 }

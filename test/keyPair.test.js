@@ -118,16 +118,22 @@ it('test mnemonic()', async () => {
     let random = randombytes(16)
     // console.log(entropy.toString('hex'))
     const mcode = sdk.keypair.generateMnemonicCode(random.toString('hex'))
-
     console.log('mcode ', mcode)
+    const mcode2 = 'attitude coyote negative library clerk copy portion bus combine gospel topic typical'
+    const mcode1 = 'disorder cluster crunch hood desk west double bind bomb salmon identify rate'
+    const hdPath_SM2= "m/44'/2022'/0'/0/0";
+    const hdPath_Ed25519= "m/44'/2022'/0'/0'/0'";
     // ED25519
-    const privkey = sdk.keypair.privKeyFromMCodeAndCrypto(sdk.keypair.CRYPTO_ED25519, mcode, "m/44'/526'/1'/0/0")
-    console.log(privkey)
+     const privkey = sdk.keypair.privKeyFromMCodeAndCrypto(sdk.keypair.CRYPTO_ED25519, mcode2, hdPath_Ed25519)
+    // 私钥转对象
+    const privateKeyManagerByKey = await sdk.keypair.privateKeyManagerByKey(privkey)
+    console.log('privateKeyManagerByKey-Ed25519 ', JSON.stringify(privateKeyManagerByKey))
     // SM2
-    const privkeySM2 = sdk.keypair.privKeyFromMCodeAndCrypto(sdk.keypair.CRYPTO_SM2, mcode, "m/44'/526'/1'/0/0")
-    console.log(privkeySM2)
+     const privkeySM2 = sdk.keypair.privKeyFromMCodeAndCrypto(sdk.keypair.CRYPTO_SM2, mcode1, hdPath_SM2)
+    const privateKeyManagerByKey2 = await sdk.keypair.privateKeyManagerByKey(privkeySM2)
+    console.log('privateKeyManagerByKey-SM2 ', JSON.stringify(privateKeyManagerByKey2))
 
-    const privateKey = await sdk.keypair.privateKeyFromMnemonicCode(mcode, "m/44'/526'/1'/0/0")
+    const privateKey = await sdk.keypair.privateKeyFromMnemonicCode(mcode2, hdPath_Ed25519)
     console.log(privateKey)
 
 })
