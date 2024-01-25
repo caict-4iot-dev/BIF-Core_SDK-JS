@@ -30,7 +30,7 @@ $ npm install bifcore-sdk-nodejs --save
 const BIFCoreSDK = require('bifcore-sdk-nodejs');
 
 const sdk = new BIFCoreSDK({
-  host: 'http://test-bif-core.xinghuo.space'
+  host: 'http://test.bifcore.bitfactory.cn'
 });
 
 ```
